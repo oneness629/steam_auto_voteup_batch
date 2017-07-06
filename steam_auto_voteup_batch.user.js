@@ -88,57 +88,58 @@ var wt629_com_thumbUp = function() {
 					// 是否有不支持和欢乐按钮
 					if (thumbDownA != null && thumbHappyA != null){
 				
-					// 确认不支持和欢乐按钮是否正确 thumb_down funny
-					var downHtml = thumbDownA.html();
-					var happyHtml = thumbHappyA.html();
-				
-					if (downHtml != null && downHtml.indexOf('thumb_down') > -1){
-						// 不支持按钮正常
-						isDown = true;
+						// 确认不支持和欢乐按钮是否正确 thumb_down funny
+						var downHtml = thumbDownA.html();
+						var happyHtml = thumbHappyA.html();
+					
+						if (downHtml != null && downHtml.indexOf('thumb_down') > -1){
+							// 不支持按钮正常
+							isDown = true;
+						}
+						if (happyHtml != null && happyHtml.indexOf('funny') > -1){
+							// 欢乐按钮正常
+							isHappy = true;
+						}
 					}
-					if (happyHtml != null && happyHtml.indexOf('funny') > -1){
-						// 欢乐按钮正常
-						isHappy = true;
-					}
 				}
-			}
-			if(isHappy){
-				// 有欢乐按钮，说明是评测，检查评测状态
-				var statusHtml = jQuery(thumbUpA).parent().parent().parent().prev().find('.thumb').html();
-				// 如果存在thumbsUp.png，说明是支持，否则thumbsDown.png，不支持
-				if (statusHtml.indexOf('thumbsUp.png') > -1){
-					isUpButton = true;
-					isHappyButton = false;
-				}else if (statusHtml.indexOf('thumbsDown.png') > -1){
-					isUpButton = false;
-					isHappyButton = true;
-				}else{
-					isUpButton = true;
-					isHappyButton = false;
-				}
-
-				if (isUpButton){
-					jQuery(thumbUpA).html("["+ jQuery(thumbUpA).html() +"]");
-					jQuery(thumbUpA).click();
-				}
-				if (isHappyButton){
-					// 如果有欢乐按钮，确保欢乐按钮没有按下
-					var happyHtml = thumbHappyA.html();
-					if(thumbHappyA.attr('class').indexOf('active') > -1){
+				if(isHappy){
+					// 有欢乐按钮，说明是评测，检查评测状态
+					var statusHtml = jQuery(thumbUpA).parent().parent().parent().prev().find('.thumb').html();
+					// 如果存在thumbsUp.png，说明是支持，否则thumbsDown.png，不支持
+					if (statusHtml.indexOf('thumbsUp.png') > -1){
+						isUpButton = true;
+						isHappyButton = false;
+					}else if (statusHtml.indexOf('thumbsDown.png') > -1){
+						isUpButton = false;
+						isHappyButton = true;
 					}else{
-						jQuery(thumbHappyA).html("["+ jQuery(thumbHappyA).html() +"]");
-						jQuery(thumbHappyA).click();
+						// 没有找到是否支持，直接点赞
+						isUpButton = true;
+						isHappyButton = false;
 					}
-				} else{
+					
+					if (isUpButton){
+						jQuery(thumbUpA).html("["+ jQuery(thumbUpA).html() +"]");
+						jQuery(thumbUpA).click();
+					}
+					if (isHappyButton){
+						// 如果有欢乐按钮，确保欢乐按钮没有按下
+						var happyHtml = thumbHappyA.html();
+						if(thumbHappyA.attr('class').indexOf('active') > -1){
+						}else{
+							jQuery(thumbHappyA).html("["+ jQuery(thumbHappyA).html() +"]");
+							jQuery(thumbHappyA).click();
+						}
+					}
+				} else {
 					// 如果没有欢乐按钮 直接点赞
 					jQuery(thumbUpA).html("["+ jQuery(thumbUpA).html() +"]");
 					jQuery(thumbUpA).click();
 				}
 			}
+		}catch(e){
+			wt629_com_log('操作出现异常，' + e,true);
 		}
-	}catch(e){
-		wt629_com_log('操作出现异常，' + e,true);
-	}
 	});
 	wt629_com_log('点赞操作完成，但是ajax请求并不一定全部完成，请等待一些时间 ... ',true);
 };
