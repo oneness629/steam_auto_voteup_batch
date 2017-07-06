@@ -3,7 +3,7 @@
 // @namespace   com.wt629.steam.voteup.auto.batch
 // @description Steam社区自动点赞脚本,在steam动态页面上添加自动点赞.
 // @include     http://steamcommunity.com/id/*/home/
-// @version     1.1
+// @version     1.2
 // ==/UserScript==
 var controlPanelHtml = `
 <div id='wt629_com_controlPanel' style='position:fixed; top: 10px; left: 10px; background-color: red; z-index: 450; color: white; width : 300px;'>
@@ -13,14 +13,17 @@ var controlPanelHtml = `
 		<div>选项</div>
 		<div style='margin-left:20px;'>
 			<div> 
-				<input type="checkbox" id="wt629_com_is_enable" class="wt629_com_check_box">
+				<input type="checkbox" id="wt629_com_is_enable" class="wt629_com_cpfrom">
 				<span>启用自动点赞</span>
 			</div>
 			<div>
-				<input type="checkbox" id="wt629_com_is_timed_refresh" class="wt629_com_check_box">
+				<input type="checkbox" id="wt629_com_is_timed_refresh" class="wt629_com_cpfrom">
 				<span>自动刷新页面</span>
 			</div>
-			<div> 自动刷新页面</div>
+			<div>
+				<input type="number" id="wt629_com_refresh_timeout" class="wt629_com_cpfrom" min="1000" max="100000" style='width:50px;' />
+				<span>自动刷新页面时间[1000ms~100000ms]</span>
+			</div>
 		</div>
 	</div>
 	<div style='margin-left:20px;'>
@@ -65,14 +68,13 @@ var wt629_com_thumbUp = function() {
 	thumb_up.each(function(){
 		try{
 			var classStr = jQuery(this).parent().parent().attr('class');
+			// 遍历没有点击的点赞按钮[包含未点击和点击欢乐的]
 			if (!(classStr != null && classStr.indexOf('active') > -1)){
 				// 点赞按钮
 				var thumbUpA = jQuery(this).parent().parent();
 				var thumbDownA = jQuery(thumbUpA).next('a');
-				// 欢乐按钮html
-				// <a href="javascript:void(0)" onclick="UserReviewVoteTag( '33282068', 1, 'RecommendationVoteTagBtn33282068_1' )" class="btn_grey_grey btn_small_thin ico_hover " id="RecommendationVoteTagBtn33282068_1"><span><i class="ico16 funny"></i>欢乐</span></a>
-				// 分享按钮html
-				// <a onclick="return ShowSharePublishedFilePopup(965681196, 521630 );" class="btn_grey_grey btn_small_thin" data-tooltip-content="在 Steam 或您喜爱的社交网络分享此物品"><span>分享</span></a>
+				// 欢乐按钮html <i class="ico16 funny"></i>欢乐</span>
+				// 分享按钮html <span>分享</span>
 				var thumbHappyA = null;
 				
 				var isUp = true;
@@ -87,11 +89,11 @@ var wt629_com_thumbUp = function() {
 					thumbHappyA = jQuery(thumbDownA).next('a');
 					// 是否有不支持和欢乐按钮
 					if (thumbDownA != null && thumbHappyA != null){
-				
+					
 						// 确认不支持和欢乐按钮是否正确 thumb_down funny
 						var downHtml = thumbDownA.html();
 						var happyHtml = thumbHappyA.html();
-					
+						
 						if (downHtml != null && downHtml.indexOf('thumb_down') > -1){
 							// 不支持按钮正常
 							isDown = true;
@@ -162,41 +164,72 @@ jQuery(document).ready(function(){
 	// 读取checkbox值
 	var wt629_com_is_enable = wt629_com_getCookie('wt629_com_is_enable');
 	var wt629_com_is_timed_refresh = wt629_com_getCookie('wt629_com_is_timed_refresh');
+	var wt629_com_refresh_timeout = wt629_com_getCookie('wt629_com_refresh_timeout');
+	/*
+	alert('wt629_com_is_enable:' + wt629_com_is_enable);
+	alert('wt629_com_is_timed_refresh:' + wt629_com_is_timed_refresh);
+	alert('wt629_com_refresh_timeout:' + wt629_com_refresh_timeout);
+	*/
 	if ('1' == wt629_com_is_enable){
 		jQuery('#wt629_com_is_enable').attr('checked','checked');
 	}
 	if ('1' == wt629_com_is_timed_refresh){
 		jQuery('#wt629_com_is_timed_refresh').attr('checked','checked');
 	}
+	if (wt629_com_refresh_timeout == null || wt629_com_refresh_timeout == '' || isNaN(wt629_com_refresh_timeout)){
+		wt629_com_log('保存的超时时间无法解析或不是数值,修改为默认60000ms ...', true);
+		wt629_com_refresh_timeout = 60000;
+		wt629_com_setCookie('wt629_com_refresh_timeout',wt629_com_refresh_timeout,365);
+	}
+	jQuery('#wt629_com_refresh_timeout').val(wt629_com_refresh_timeout);
 
 	// checkbox 点击事件
-	jQuery('.wt629_com_check_box').click(function(){
+	jQuery('.wt629_com_cpfrom').click(function(){
 		var wt629_com_is_enable = jQuery('#wt629_com_is_enable').is(':checked');
 		var wt629_com_is_timed_refresh = jQuery('#wt629_com_is_timed_refresh').is(':checked');
+		var wt629_com_refresh_timeout = jQuery('#wt629_com_refresh_timeout').val();
+		/*
 		alert("wt629_com_is_enable :" + wt629_com_is_enable);
 		alert("wt629_com_is_timed_refresh :" + wt629_com_is_timed_refresh);
+		alert("wt629_com_refresh_timeout :" + wt629_com_refresh_timeout);
+		*/
 		if (wt629_com_is_enable){
 			wt629_com_setCookie('wt629_com_is_enable','1',365);
 		}else{
 			wt629_com_setCookie('wt629_com_is_enable','0',365);
 		}
-	
 		if (wt629_com_is_timed_refresh){
 			wt629_com_setCookie('wt629_com_is_timed_refresh','1',365);
 		}else{
 			wt629_com_setCookie('wt629_com_is_timed_refresh','0',365);
 		}
+		if (wt629_com_refresh_timeout == null || wt629_com_refresh_timeout == '' || isNaN(wt629_com_refresh_timeout)){
+			wt629_com_log('保存的超时时间无法解析或不是数值,修改为默认60000ms ...', true);
+			wt629_com_refresh_timeout = 60000;
+			wt629_com_setCookie('wt629_com_refresh_timeout',wt629_com_refresh_timeout,365);
+		}
 	});
 	
 	var isEnable = wt629_com_getCookie('wt629_com_is_enable');
 	if ('1' == isEnable){
+		wt629_com_log('点赞选项已启用 ...', false);
+		// 批量点赞
 		wt629_com_thumbUp();
+		wt629_com_log('批量点赞完成 ', true);
+		
+		var isTimedRefresh = wt629_com_getCookie('wt629_com_is_timed_refresh');
+		var refreshTimeout = wt629_com_getCookie('wt629_com_refresh_timeout');
+		if (isNaN(refreshTimeout)){
+			wt629_com_log('保存的超时时间无法解析或不是数值,修改为默认60000ms ...', true);
+			refreshTimeout = 60000;
+			wt629_com_setCookie('wt629_com_refresh_timeout','60000',365);
+		}
+		if ('1' == isTimedRefresh && !isNaN(refreshTimeout)){
+			setTimeout("location.reload();", refreshTimeout);
+		}
+		
 	}else{
 		wt629_com_log('点赞选项未启用 ...', false);
 	}
-	var isTimedRefresh = wt629_com_getCookie('wt629_com_is_timed_refresh');
-	var timeout = wt629_com_getCookie('wt629_com_timeout');
-	if ('1' == isTimedRefresh){
-		setTimeout("location.reload();", 60000);
-	}
+	
 }); 
