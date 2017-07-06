@@ -1,5 +1,5 @@
 ﻿// ==UserScript==
-// @name        Steam社区自动点赞脚本
+// @name        Steam社区自动点赞脚本[测试版]
 // @namespace   com.wt629.steam.voteup.auto.batch
 // @description Steam社区自动点赞脚本,在steam动态页面上添加自动点赞.
 // @include     http://steamcommunity.com/id/*/home/
