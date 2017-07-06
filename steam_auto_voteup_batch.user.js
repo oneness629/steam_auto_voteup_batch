@@ -118,19 +118,14 @@ var wt629_com_thumbUp = function() {
 				}
 
 				if (isUpButton){
-					// alert("评测支持");
 					jQuery(thumbUpA).html("["+ jQuery(thumbUpA).html() +"]");
 					jQuery(thumbUpA).click();
 				}
 				if (isHappyButton){
 					// 如果有欢乐按钮，确保欢乐按钮没有按下
 					var happyHtml = thumbHappyA.html();
-					// alert("评测已经欢乐" + happyHtml);
 					if(thumbHappyA.attr('class').indexOf('active') > -1){
-						// alert('已点击欢乐');
 					}else{
-						// alert('点击欢乐' + happyHtml);
-						//alert("评测欢乐");
 						jQuery(thumbHappyA).html("["+ jQuery(thumbHappyA).html() +"]");
 						jQuery(thumbHappyA).click();
 					}
