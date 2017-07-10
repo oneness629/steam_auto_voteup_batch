@@ -3,12 +3,12 @@
 // @namespace   com.wt629.steam.voteup.auto.batch
 // @description Steam社区自动点赞脚本,在steam动态页面上添加自动点赞.
 // @include     http://steamcommunity.com/id/*/home/
-// @version     1.3
+// @version     1.4
 // ==/UserScript==
 var controlPanelHtml = `
 <div id='wt629_com_controlPanel' style='position:fixed; top: 10px; left: 10px; background-color: red; z-index: 450; color: white; width : 300px;'>
 	<div id='wt629_com_controlPanel_show_or_hide' style='float: right;'>显示/隐藏</div>
-	<div class='wt629_com_controlPanel_main'>Steam自动点赞脚本控制台[开发中...]</div>
+	<div class='wt629_com_controlPanel_main'>Steam社区自动点赞脚本控制台[开发中...]</div>
 	<div class='wt629_com_controlPanel_main' style='margin-left:20px;'>
 		<div>选项</div>
 		<div style='margin-left:20px;'>
@@ -56,7 +56,7 @@ var wt629_com_getCookie = function(c_name) {
 			return unescape(document.cookie.substring(c_start,c_end));
 		}
 	}
-return "";
+	return "";
 };
 `;
 
@@ -165,7 +165,7 @@ jQuery('body').append('<script type="text/javascript">' +logControlJsCode+ '</sc
 
 // 读取保存的配置数据
 var wt629_com_is_enable = wt629_com_getCookie('wt629_com_is_enable');
-var wt629_com_is_show = jQuery('#wt629_com_is_show').is(':checked');
+var wt629_com_is_show = wt629_com_getCookie('wt629_com_is_show');
 var wt629_com_is_timed_refresh = wt629_com_getCookie('wt629_com_is_timed_refresh');
 var wt629_com_refresh_timeout = wt629_com_getCookie('wt629_com_refresh_timeout');
 
@@ -180,7 +180,7 @@ var setDefaultConfigData = function(){
 
 //检查配置数据是否存在，或是否配置。如果没有配置，设置缺省数据
 var checkIsConfig = function(){
-	if (null == wt629_com_is_enable || undefined == wt629_com_is_enable ){
+	if (null == wt629_com_is_enable || undefined == wt629_com_is_enable || '' == wt629_com_is_enable){
 		wt629_com_log('初始化配置信息 ... ', false);
 		setDefaultConfigData();
 		wt629_com_log('初始化配置信息 完成 ', true);
@@ -190,7 +190,7 @@ var checkIsConfig = function(){
 // 读取配置数据
 var readConfigData = function(){
 	wt629_com_is_enable = wt629_com_getCookie('wt629_com_is_enable');
-	wt629_com_is_show = jQuery('#wt629_com_is_show').is(':checked');
+	wt629_com_is_show = wt629_com_getCookie('wt629_com_is_show');
 	wt629_com_is_timed_refresh = wt629_com_getCookie('wt629_com_is_timed_refresh');
 	wt629_com_refresh_timeout = wt629_com_getCookie('wt629_com_refresh_timeout');
 	/*
@@ -211,11 +211,6 @@ var showConfigData = function(){
 	}
 	if ('1' == wt629_com_is_show){
 		jQuery('#wt629_com_is_show').attr('checked','checked');
-		jQuery('#wt629_com_controlPanel').css('width','100px');
-		jQuery('.wt629_com_controlPanel_main').hide();
-	}else{
-		jQuery('#wt629_com_controlPanel').css('width','300px');
-		jQuery('.wt629_com_controlPanel_main').show();
 	}
 	if ('1' == wt629_com_is_timed_refresh){
 		jQuery('#wt629_com_is_timed_refresh').attr('checked','checked');
@@ -229,17 +224,27 @@ var showConfigData = function(){
 	wt629_com_log('显示配置表单信息 完成 ', true);
 };
 
-//显示控制面板
+// 显示控制面板
 var showControlPanel = function(){
 	jQuery('#wt629_com_controlPanel').css('width','300px');
 	jQuery('.wt629_com_controlPanel_main').show();
 };
 
-//隐藏控制面板
+// 隐藏控制面板
 var hideControlPanel = function(){
 	jQuery('#wt629_com_controlPanel').css('width','100px');
 	jQuery('.wt629_com_controlPanel_main').hide();
 };
+
+// 检查面板是否显示
+var checkIsShow = function(){
+	if ('1' == wt629_com_is_show){
+		showControlPanel();
+	}else{
+		hideControlPanel();
+	}
+};
+
 
 // 设置事件
 var setEvent = function(){
@@ -266,6 +271,7 @@ var setEvent = function(){
 		alert("wt629_com_is_timed_refresh :" + wt629_com_is_timed_refresh);
 		alert("wt629_com_refresh_timeout :" + wt629_com_refresh_timeout);
 		*/
+		wt629_com_log('保存配置 ... ', true);
 		if (wt629_com_is_enable){
 			wt629_com_setCookie('wt629_com_is_enable','1',365);
 		}else{
@@ -286,6 +292,7 @@ var setEvent = function(){
 			wt629_com_refresh_timeout = 60000;
 			wt629_com_setCookie('wt629_com_refresh_timeout',wt629_com_refresh_timeout,365);
 		}
+		wt629_com_log('保存配置 完成 ', true);
 	});
 };
 
@@ -321,6 +328,9 @@ jQuery(document).ready(function(){
 	
 	// 检查配置是否存在，不存在使用缺省
 	checkIsConfig();
+	
+	// 检查是否可视
+	checkIsShow();
 	
 	// 显示配置到表单
 	showConfigData();
