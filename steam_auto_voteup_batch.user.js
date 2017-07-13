@@ -71,8 +71,9 @@ var wt629_com_thumbUp = function() {
 	wt629_com_log('开始点赞 ...',true);
 	// 所有点赞按钮
 	var thumb_up = jQuery('.thumb_up');
-	var num_noclick = 0;
-	var num = 0;
+	var num = thumb_up.size();;
+	var num_upClick = 0;
+	var num_happyClick = 0;
 	thumb_up.each(function(){
 		try{
 			var classStr = jQuery(this).parent().parent().attr('class');
@@ -131,6 +132,7 @@ var wt629_com_thumbUp = function() {
 					if (isUpButton){
 						jQuery(thumbUpA).html("["+ jQuery(thumbUpA).html() +"]");
 						jQuery(thumbUpA).click();
+						num_upClick ++;
 					}
 					if (isHappyButton){
 						// 如果有欢乐按钮，确保欢乐按钮没有按下
@@ -139,18 +141,21 @@ var wt629_com_thumbUp = function() {
 						}else{
 							jQuery(thumbHappyA).html("["+ jQuery(thumbHappyA).html() +"]");
 							jQuery(thumbHappyA).click();
+							num_happyClick ++;
 						}
 					}
 				} else {
 					// 如果没有欢乐按钮 直接点赞
 					jQuery(thumbUpA).html("["+ jQuery(thumbUpA).html() +"]");
 					jQuery(thumbUpA).click();
+					num_upClick ++;
 				}
 			}
 		}catch(e){
 			wt629_com_log('操作出现异常，' + e,true);
 		}
 	});
+	wt629_com_log('一共' + num + '条动态，点赞' + num_upClick + '次，点欢乐'+ num_happyClick + '次。' ,true);
 	wt629_com_log('点赞完成，但ajax并非全部完成，请等待一些时间 ... ',true);
 };
 `;
