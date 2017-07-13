@@ -6,9 +6,12 @@
 // @version     1.4
 // ==/UserScript==
 var controlPanelHtml = `
-<div id='wt629_com_controlPanel' style='position:fixed; top: 10px; left: 10px; background-color: red; z-index: 450; color: white; width : 300px;'>
-	<div id='wt629_com_controlPanel_show_or_hide' style='float: right;'>显示/隐藏</div>
-	<div class='wt629_com_controlPanel_main'>Steam社区自动点赞脚本控制台[开发中...]</div>
+<div id='wt629_com_controlPanel' style='font-size: 10px; position:fixed; top: 10px; left: 10px; background-color: red; z-index: 450; color: white; width : 300px;'>
+	<div style='float: right;'>
+		<span id='wt629_com_controlPanel_page_reload_tip' ></span>
+		<span id='wt629_com_controlPanel_show_or_hide' >显示/隐藏</span>
+	</div>
+	<div class='wt629_com_controlPanel_main'>Steam社区自动点赞脚本控制台<br/>[缓慢开发中...]</div>
 	<div class='wt629_com_controlPanel_main' style='margin-left:20px;'>
 		<div>选项</div>
 		<div style='margin-left:20px;'>
@@ -25,14 +28,15 @@ var controlPanelHtml = `
 				<span>自动刷新页面</span>
 			</div>
 			<div>
-				<input type="number" id="wt629_com_refresh_timeout" class="wt629_com_cpfrom" min="1000" max="100000" style='width:50px;' />
-				<span>自动刷新页面时间[1000ms~100000ms]</span>
+				<input type="number" id="wt629_com_refresh_timeout" class="wt629_com_cpfrom" min="10" max="3600" style='width:50px;' />
+				<span>自动刷新页面时间[10~3600秒]</span>
 			</div>
 		</div>
 	</div>
-	<div class='wt629_com_controlPanel_main' style='margin-left:20px;'>
+	<hr/>
+	<div class='wt629_com_controlPanel_main' style='margin-left:0px;'>
 		<div>日志信息:</div>
-		<div style='margin-left:20px;' id='wt629_com_controlPanel_msg'>显示日志内容</div>
+		<div style='margin-left:0px;' id='wt629_com_controlPanel_msg'>显示日志内容</div>
 	</div>
 </div>
 `;
@@ -147,7 +151,7 @@ var wt629_com_thumbUp = function() {
 			wt629_com_log('操作出现异常，' + e,true);
 		}
 	});
-	wt629_com_log('点赞操作完成，但是ajax请求并不一定全部完成，请等待一些时间 ... ',true);
+	wt629_com_log('点赞完成，但ajax并非全部完成，请等待一些时间 ... ',true);
 };
 `;
 jQuery('body').append('<script type="text/javascript">' +thumbUpJsCode+ '</script>');
@@ -245,6 +249,13 @@ var checkIsShow = function(){
 	}
 };
 
+//设置默认超时时间
+var setDefaultTimeOut = function(){
+	wt629_com_log('保存的超时时间无法解析或不是数值,修改为默认60秒 ...', true);
+	refreshTimeout = 60;
+	wt629_com_setCookie('wt629_com_refresh_timeout','60',365);
+};
+
 
 // 设置事件
 var setEvent = function(){
@@ -288,12 +299,41 @@ var setEvent = function(){
 			wt629_com_setCookie('wt629_com_is_timed_refresh','0',365);
 		}
 		if (wt629_com_refresh_timeout == null || wt629_com_refresh_timeout == '' || isNaN(wt629_com_refresh_timeout)){
-			wt629_com_log('保存的超时时间无法解析或不是数值,修改为默认60000ms ...', true);
-			wt629_com_refresh_timeout = 60000;
+			setDefaultTimeOut();
+		}else{
 			wt629_com_setCookie('wt629_com_refresh_timeout',wt629_com_refresh_timeout,365);
 		}
-		wt629_com_log('保存配置 完成 ', true);
+		wt629_com_log('保存配置 完成 请手动刷新页面加载新配置 ..  ', true);
 	});
+};
+
+
+
+// 页面超时剩余时间
+var pageTimeOut = -99;
+// 超时计时器
+var interval;
+// 页面刷新超时
+var pageReloadTimeOut = function(){
+	var isTimedRefresh = wt629_com_getCookie('wt629_com_is_timed_refresh');
+	var refreshTimeout = wt629_com_getCookie('wt629_com_refresh_timeout');
+	if (isNaN(refreshTimeout)){
+		setDefaultTimeOut();
+	}
+	if (pageTimeOut == -99){
+		pageTimeOut = refreshTimeout;
+	}
+	if(!isTimedRefresh){
+		jQuery('#wt629_com_controlPanel_page_reload_tip').html('');
+	}
+	if (pageTimeOut <= 0){
+		clearInterval(interval);
+		jQuery('#wt629_com_controlPanel_page_reload_tip').html('刷新中...');
+		location.reload(true);
+	}else{
+		jQuery('#wt629_com_controlPanel_page_reload_tip').html(pageTimeOut + '秒后刷新');
+		pageTimeOut --;
+	}
 };
 
 // 点赞事件
@@ -308,12 +348,11 @@ var thumbUpEvnet = function(){
 		var isTimedRefresh = wt629_com_getCookie('wt629_com_is_timed_refresh');
 		var refreshTimeout = wt629_com_getCookie('wt629_com_refresh_timeout');
 		if (isNaN(refreshTimeout)){
-			wt629_com_log('保存的超时时间无法解析或不是数值,修改为默认60000ms ...', true);
-			refreshTimeout = 60000;
-			wt629_com_setCookie('wt629_com_refresh_timeout','60000',365);
+			setDefaultTimeOut();
 		}
 		if ('1' == isTimedRefresh && !isNaN(refreshTimeout)){
-			setTimeout("location.reload(true);", refreshTimeout);
+			interval = setInterval(pageReloadTimeOut, 1000);
+			// setTimeout("location.reload(true);", refreshTimeout);
 		}
 		
 	}else{
