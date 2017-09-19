@@ -13,6 +13,10 @@ var controlPanelHtml = `
 	</div>
 	<div class='wt629_com_controlPanel_main'>Steam社区自动点赞脚本控制台<br/>[缓慢开发中...]</div>
 	<div class='wt629_com_controlPanel_main' style='margin-left:20px;'>
+		<div>URL</div>
+		<div style='margin-left:20px;' id='wt629_com_controlPanel_url'>
+			
+		</div>
 		<div>选项</div>
 		<div style='margin-left:20px;'>
 			<div> 
@@ -384,5 +388,7 @@ jQuery(document).ready(function(){
 	
 	// 点赞事件
 	thumbUpEvnet();
-	
+
+	$('wt629_com_controlPanel_url').innerHTML = window.location.href;
+	wt629_com_setCookie('wt629_com_his',wt629_com_getCookie('wt629_com_his') + window.location.href + '\n\r',365);
 }); 
