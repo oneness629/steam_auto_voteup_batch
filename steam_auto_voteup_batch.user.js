@@ -389,6 +389,12 @@ jQuery(document).ready(function(){
 	// 点赞事件
 	thumbUpEvnet();
 
-	$('wt629_com_controlPanel_url').innerHTML = window.location.href;
-	wt629_com_setCookie('wt629_com_his',wt629_com_getCookie('wt629_com_his') + window.location.href + '\n\r',365);
+	var url = window.location.href;
+	$('wt629_com_controlPanel_url').innerHTML = url;
+	var his = wt629_com_getCookie('wt629_com_his');
+	if (his != null && his.length > 0 ){
+		if (his.indexOf(url) == -1){
+			wt629_com_setCookie('wt629_com_his',his + url + '\n\r',365);
+		}
+	}
 }); 
