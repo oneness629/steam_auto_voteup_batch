@@ -6,19 +6,7 @@ import time
 from selenium import webdriver
 from django.http.response import HttpResponse
 from selenium.webdriver.firefox.options import Options
-from test.pickletester import __main__
 import os
-import json
-from steamBrowserFunctions import get_online_state
-from steamBrowserFunctions import get_badges_count
-from steamBrowserFunctions import get_games_count
-from steamBrowserFunctions import get_screenshots_count
-from steamBrowserFunctions import get_videos_count
-from steamBrowserFunctions import get_myworkshopfiles_count
-from steamBrowserFunctions import get_recommended_count
-from steamBrowserFunctions import get_groups_count
-from steamBrowserFunctions import get_friends_count
-from steamBrowserFunctions import get_background_image_url
 
 logging.basicConfig(level=logging.DEBUG)
 
