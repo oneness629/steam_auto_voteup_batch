@@ -14,32 +14,31 @@ sys.setdefaultencoding('utf8')
 # 浏览器
 browser = Browser()
 
-
 # 登录用户检查
 def check_login_user():
-    if browser is None :
-        logging.info('浏览器为空')
-        return False
-
-
 
     functions = {'check_steam_user_is_login':check_steam_user_is_login}
     result_dict = browser.open_browser(get_check_is_login_url('oneness629'), functions, browser.driver, False, False)
-    logging.info('result_dict : ' + json.dumps(result_dict).decode("unicode-escape"))
+    logging.info('检查用户登录结果 : ' + json.dumps(result_dict).decode("unicode-escape"))
     if result_dict['check_steam_user_is_login'] == False:
         functions = {'login_from':login_from}
         result_dict = browser.open_browser(None, functions, browser.driver, False, False)
-        logging.info('result_dict : ' + json.dumps(result_dict).decode("unicode-escape"))
+        logging.info('用户登录结果 : ' + json.dumps(result_dict).decode("unicode-escape"))
     else:
+        # 检查用户名是否一致
+            #用户名不一致，注销
         pass
 
-    logging.info('result_dict : ' + json.dumps(result_dict).decode("unicode-escape"))
 
+# 点赞
+def voteup():
+    pass
 
 # 自动点赞
 def auto_voteup():
     try:
         check_login_user()
+        voteup()
     except Exception as e:
         logging.exception(e)
     finally:
