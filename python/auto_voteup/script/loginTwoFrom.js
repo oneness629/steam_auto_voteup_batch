@@ -3,6 +3,6 @@ var setTwoLoginCode = function () {
 };
 var loginFun = function () {
 	setTwoLoginCode();
-	document.getElementById('login_twofactorauth_buttonset_incorrectcode').getElementsByClassName('auth_button')[0].click()
+	document.getElementById('login_twofactorauth_buttonset_incorrectcode').getElementsByClassName('auth_button')[0].click();
 };
 loginFun();
