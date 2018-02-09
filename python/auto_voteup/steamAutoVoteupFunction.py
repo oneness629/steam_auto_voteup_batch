@@ -5,6 +5,9 @@ import sys
 import time
 
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.support.wait import WebDriverWait
 
 from python.auto_voteup.steamAutoVoteupConfig import load_user_login_config, get_cookie_content, set_cookie_content, \
     get_check_is_login_url
@@ -54,16 +57,21 @@ def login_from(driver):
             logging.warn('读取用户配置信息失败')
             return '读取用户配置信息失败'
 
-        script = open('./script/loginFrom.js').read();
-        script = script.replace('#steam_id#',user_dict['steam_id'])
-        script = script.replace('#steam_password#',user_dict['steam_password'])
-        driver.execute_script(script);
+        # 直接用API
+        # WebDriver.find_element_by_id().is_displayed()
+        driver.find_element_by_id('steamAccountName').send_keys(user_dict['steam_id'])
+        driver.find_element_by_id('steamPassword').send_keys(user_dict['steam_password'])
+        driver.find_element_by_id('loginForm').submit()
+
+        # 检查2次登录弹窗是否显示
+        # （login_twofactorauth_buttonsets 或者 login_twofactorauth_buttonset_entercode是2个提交和请求协助按钮的父div的id）
+        WebDriverWait(driver, 5, 1).until(lambda driver_param : driver_param.find_element_by_id('login_twofactorauth_buttonset_entercode').is_displayed())
 
         login_code = raw_input("请输入2次验证码：")
 
-        script = open('./script/loginTwoFrom.js').read();
-        script = script.replace('#login_code#',login_code)
-        driver.execute_script(script);
+        # 输入验证码并输入回车
+        driver.find_element_by_id('twofactorcode_entry').send_keys(login_code)
+        driver.find_element_by_id('twofactorcode_entry').send_keys(Keys.ENTER)
 
         # 需要等待并检查页面内容 否者不能确定是否成功 暂时等待10s
         logging.info('等待10s')

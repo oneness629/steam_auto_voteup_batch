@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import time
 from selenium.webdriver.firefox import webdriver
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
@@ -24,7 +25,7 @@ browser = Browser()
 def check_login_user():
 
     functions = {
-        # 写入存在的cookie
+        # 写入存在的登录cookie
         'write_login_cookie_to_browser_content': write_login_cookie_to_browser_content,
         # 检查登录
         'check_steam_user_is_login':check_steam_user_is_login
@@ -67,19 +68,12 @@ def voteup():
 # 等待10秒
 def wait(driver):
     logging.info('等待10s')
-    driver.implicitly_wait(10)
-    # WebDriverWait(driver, 10).until(getFalse)
+    time.sleep(10)
 
-'''
-def getFalse(param):
-    logging.info("param:" + str(param))
-    return False
-'''
 
 # 自动点赞
 def auto_voteup():
     try:
-
         check_login_user()
         voteup()
     except Exception as e:
@@ -87,8 +81,6 @@ def auto_voteup():
     finally:
         # browser.close_browser()
         pass
-
-
 
 
 def main():
