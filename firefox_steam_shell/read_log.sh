@@ -37,6 +37,7 @@ do
   readLine=$[$lineIndex+1]
   
   if [[ $readIndex%60 -eq 0 ]]; then
+    clear
     echo '60次读取文件后关闭 FireFox'
     pkill firefox
   fi
