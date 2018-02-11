@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
+from auto_voteup import steamAutoVoteup
 import sys
-
-from python.auto_voteup import steamAutoVoteup
 
 if __name__ == '__main__':
     sys.exit(steamAutoVoteup.main())

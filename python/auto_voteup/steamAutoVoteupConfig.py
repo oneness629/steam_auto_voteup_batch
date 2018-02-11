@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
-
 import sys
-
 import os
 
 logging.basicConfig(level=logging.INFO)

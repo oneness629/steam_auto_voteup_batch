@@ -8,7 +8,7 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.firefox.options import Options
 import os
 
-from python.auto_voteup.steamAutoVoteupConfig import load_config
+from auto_voteup.steamAutoVoteupConfig import *
 
 logging.basicConfig(level=logging.INFO)
 

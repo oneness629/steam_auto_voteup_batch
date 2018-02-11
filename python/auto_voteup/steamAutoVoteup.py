@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 import time
+import json
 from selenium.webdriver.firefox import webdriver
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
-from python.auto_voteup.steamAutoVoteupConfig import *
-import json
-
-from python.auto_voteup.steamAutoVoteupFunction import get_login_steam_name, check_steam_user_is_login, login_from, \
-    exec_steam_auto_voteup_batch_script, set_voteup_cookie, write_login_cookie_to_browser_content
-from python.driver.browserSelenium import Browser
+from auto_voteup.steamAutoVoteupConfig import *
+from auto_voteup.steamAutoVoteupFunction import *
+from driver.browserSelenium import Browser
 
 logging.basicConfig(level=logging.INFO)
 
