@@ -9,8 +9,8 @@
 
 
   "_浏览器相关配置" : "-------------------------",
-  "_浏览器是否可见" : "true",
-  "browser_visible" : "true",
+  "_浏览器是否可见 true （可见）或者 false （不可见）" : true,
+  "browser_visible" : false,
 
   "_浏览器驱动类型" : "(FireFox、PhantomJs)",
   "browser_driver_type" : "FireFox",
