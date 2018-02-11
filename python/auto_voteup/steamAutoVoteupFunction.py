@@ -95,7 +95,7 @@ def set_voteup_cookie(driver):
 
 # 执行steam自动点赞js脚本
 def exec_steam_auto_voteup_batch_script(driver):
-    script = open('./../../steam_auto_voteup_batch.user.js').read();
+    script = open('./../steam_auto_voteup_batch.user.js').read();
     driver.execute_script(script);
     return True
 
