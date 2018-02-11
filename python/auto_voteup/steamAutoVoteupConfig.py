@@ -57,7 +57,7 @@ def get_check_is_login_url(steam_id):
         logging.info('steam_id参数为空')
 
 # 临时的cookie文件保存
-temp_cookie_file = 'temp/temp_cookie.json'
+temp_cookie_file = 'temp/temp_cookie.dict'
 
 # 获取cookie内容
 def get_cookie_content():

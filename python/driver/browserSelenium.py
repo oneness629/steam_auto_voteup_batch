@@ -93,7 +93,7 @@ class Browser():
         #定义时间显示格式
         fmt='%Y_%m_%d__%H_%M_%S'
         date_string=time.strftime(fmt,time.localtime(time.time()))
-        temp_path = 'temp'
+        temp_path = 'temp/html'
         if os.path.exists(temp_path) != True :
             os.mkdir(temp_path)
         file_name = temp_path + '/' + date_string + '.html'
