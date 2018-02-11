@@ -1,5 +1,26 @@
 {
-  "steam_id" : "steamid",
-  "steam_password" : "password"
+  "_steam相关配置" : "-------------------------",
+
+  "_输入steam ID" : "",
+  "steam_id" : "oneness629",
+
+  "_输入steam 密码，可选" : "实际使用去除前面的下划线",
+  "_steam_password" : "input steam password",
+
+
+  "_浏览器相关配置" : "-------------------------",
+  "_浏览器是否可见" : "true",
+  "browser_visible" : "true",
+
+  "_浏览器驱动类型" : "(FireFox、PhantomJs)",
+  "browser_driver_type" : "FireFox",
+
+  "_Firefox 可执行文件路径" : "（根据browser_driver_type配置选填）",
+  "firefox_path" : "D:/PortableApps/PortableApps/FirefoxPortable/App/Firefox64/firefox.exe",
+
+  "_PhantomJs  可执行文件路径" : "（根据browser_driver_type配置选填）",
+  "phantomjs_path" : "D:/GreenProgramFiles/phantomjs-2.1.1-windows/bin/phantomjs.exe"
+
+
 
 }
