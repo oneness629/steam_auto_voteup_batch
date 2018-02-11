@@ -70,7 +70,7 @@ def auto_voteup():
         pass
 
 # 点赞次数
-voteup_count = 99999999
+voteup_count = 99999
 # 点赞间隔时间(秒)
 voteup_timeout = 60
 
