@@ -8,6 +8,8 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.firefox.options import Options
 import os
 
+from python.auto_voteup.steamAutoVoteupConfig import load_config
+
 logging.basicConfig(level=logging.INFO)
 
 # 编码问题
@@ -30,15 +32,42 @@ class Browser():
     driver_type_phantomjs = 'PhantomJs'
     driver_type = driver_type_firefox
 
+    # 浏览器可见性
+    browser_visible = False
+
     # 浏览器驱动
     driver=None
 
+    # 构造
+    def __init__(self):
+        self.init_config()
+
+    # 读取配置文件
+    def init_config(self):
+        try:
+            config_dict = load_config()
+            self.browser_visible = config_dict['browser_visible']
+            logging.info('浏览器是否显示：' + str(self.browser_visible))
+            self.driver_type = config_dict['browser_driver_type']
+            logging.info('浏览器驱动类型：' + self.driver_type)
+            self.firefox_path = config_dict['firefox_path']
+            logging.info('FireFox浏览器可执行文件路径：' + self.firefox_path)
+            self.phantomjs_path = config_dict['phantomjs_path']
+            logging.info('PhantomJs浏览器可执行文件路径：' + self.phantomjs_path)
+        except BaseException as e :
+            logging.exception(e)
+
+
+
     # 初始化浏览器
-    def init_browser(self, driver_type, is_hide_browser=True):
+    def init_browser(self, driver_type, browser_visible=None):
+        if browser_visible is None:
+            browser_visible = self.browser_visible
+
         if self.driver_type == self.driver_type_firefox:
             # 无GUI模式FireFox
             firefox_option = Options()
-            if is_hide_browser is True:
+            if browser_visible is False:
                 firefox_option.add_argument('--headless')
                 firefox_option.add_argument('--disable-gpu')
             firefox_option.binary_location = self.firefox_path
@@ -52,12 +81,15 @@ class Browser():
 
 
     # 打开浏览器并处理信息
-    def open_browser(self, url, functions, driver=None, is_close=True, is_hide_browser=True):
+    def open_browser(self, url, functions, driver=None, is_close=True, browser_visible=None):
+        if browser_visible is None:
+            browser_visible = self.browser_visible
+
         # 返回值
         return_dict = {}
         try:
             if driver is None:
-                self.init_browser(self.driver_type, is_hide_browser)
+                self.init_browser(self.driver_type, browser_visible)
             else:
                 self.driver = driver
 

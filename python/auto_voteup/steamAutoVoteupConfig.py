@@ -16,7 +16,8 @@ logging.info('当前工作目录：' + os.path.abspath('.'))
 #配置文件名称
 config_file = 'config.json'
 
-def loadConfig():
+# 读取配置文件
+def load_config():
     try:
         with open(config_file) as json_file:
             data = json.load(json_file)
@@ -29,7 +30,7 @@ def loadConfig():
 
 # 读取用户登录相关配置
 def load_user_login_config():
-    config = loadConfig()
+    config = load_config()
     if config is None:
         logging.warn('无法读取配置文件')
         return

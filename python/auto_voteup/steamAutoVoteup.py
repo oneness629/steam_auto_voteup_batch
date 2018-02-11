@@ -29,12 +29,12 @@ def check_login_user():
         # 检查用户是否登录
         'check_steam_user_is_login':check_steam_user_is_login
     }
-    result_dict = browser.open_browser(get_check_is_login_url('oneness629'), functions, browser.driver, False, False)
+    result_dict = browser.open_browser(get_check_is_login_url('oneness629'), functions, browser.driver, False)
     logging.info('写入cookie结果和用户是否登录结果 : ' + json.dumps(result_dict).decode("unicode-escape"))
     if result_dict['check_steam_user_is_login'] == False:
         # 执行用户登录
         functions = {'login_from':login_from}
-        result_dict = browser.open_browser(None, functions, browser.driver, False, False)
+        result_dict = browser.open_browser(None, functions, browser.driver, False)
         logging.info('用户登录结果 : ' + json.dumps(result_dict).decode("unicode-escape"))
 
         # 检查结果
@@ -50,12 +50,12 @@ def check_login_user():
 def voteup():
     # 注入点赞cookie
     functions = {'set_voteup_cookie':set_voteup_cookie}
-    result_dict = browser.open_browser(None, functions, browser.driver, False, False)
+    result_dict = browser.open_browser(None, functions, browser.driver, False)
     logging.info('执行点赞js结果 : ' + json.dumps(result_dict).decode("unicode-escape"))
 
     # 执行点赞js
     functions = {'exec_steam_auto_voteup_batch_script':exec_steam_auto_voteup_batch_script}
-    result_dict = browser.open_browser(None, functions, browser.driver, False, False)
+    result_dict = browser.open_browser(None, functions, browser.driver, False)
     logging.info('执行点赞js结果 : ' + json.dumps(result_dict).decode("unicode-escape"))
 
 
