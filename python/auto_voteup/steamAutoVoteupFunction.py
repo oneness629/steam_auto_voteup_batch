@@ -22,16 +22,18 @@ sys.setdefaultencoding('utf8')
 def write_login_cookie_to_browser_content(driver):
     cookie_content = get_cookie_content()
     if cookie_content is not None :
-        logging.info('读取到的cookie内容为 ->' + cookie_content)
+        logging.debug('读取到的cookie内容为 ->' + cookie_content)
         cookies_dict = eval(cookie_content)
         for cookie in cookies_dict:
-            logging.info('添加cookie ->' + str({'name' : cookie['name'], 'value' : cookie['value']}))
+            logging.debug('添加cookie ->' + str({'name' : cookie['name'], 'value' : cookie['value']}))
             driver.add_cookie({'name' : cookie['name'], 'value' : cookie['value']})
-            # 添加好cookie后要刷新
-            driver.get(get_check_is_login_url('oneness629'))
+        # 添加好cookie后要刷新
+        logging.debug('读取cookie并重新写入到浏览器成功，重新刷新页面')
+        driver.get(get_check_is_login_url('oneness629'))
+        return True
     else:
         logging.info("cookie临时文件为空，不设置登录cookie")
-    pass
+        return False
 
 # 检查用户是否登录 true 已经登录，false 未登录
 def check_steam_user_is_login(driver):
