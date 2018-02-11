@@ -4,6 +4,7 @@ import ssl
 import logging
 import time
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.firefox.options import Options
 import os
 
@@ -74,6 +75,11 @@ class Browser():
                 for k , fun in functions.items():
                     logging.info('执行' + str(fun) + '方法 ... ')
                     return_dict[k] = fun(self.driver)
+        except WebDriverException as e:
+            logging.exception('遇到浏览器异常，清空浏览器引用，请确保浏览器进程已经结束，下次执行将自动启动新浏览器。')
+            self.driver = None
+            driver = None
+            logging.exception(e)
         except Exception as e:
             logging.exception(e)
         finally:
