@@ -1,4 +1,4 @@
 .idea/
-python/auto_voteup/temp/
 *.pyc
 *.log
+python/temp/
