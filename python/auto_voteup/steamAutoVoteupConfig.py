@@ -31,14 +31,22 @@ def load_user_login_config():
         logging.warn('无法读取配置文件')
         return
 
+    is_auto_login_not_tip = config['is_auto_login_not_tip']
     steam_id = config['steam_id']
     steam_password = None
+
     try:
         steam_password = config['steam_password']
+
     except KeyError as e:
-        steam_password = raw_input("请输入用户<"+steam_id+">的密码:")
+
+        if is_auto_login_not_tip is False:
+            steam_password = raw_input("请输入用户<"+steam_id+">的密码:")
+        else:
+            raise KeyError('自动登录不允许输入密码')
+
     logging.info('steam_id : ' + steam_id)
-    return {'steam_id': steam_id , 'steam_password' : steam_password}
+    return {'steam_id': steam_id , 'steam_password' : steam_password, 'is_auto_login_not_tip' : is_auto_login_not_tip}
 
 
 # 检查登录URL模板

@@ -7,6 +7,9 @@
   "_输入steam 密码，可选" : "实际使用去除前面的下划线",
   "_steam_password" : "input steam password",
 
+  "_is_auto_login_not_tip 是否为自动登录[不会提示输入密码，2次验证码等信息]" : "true or false",
+  "is_auto_login_not_tip" : true,
+
   "_点赞次数" : 999999,
   "voteup_count" : 999999,
 

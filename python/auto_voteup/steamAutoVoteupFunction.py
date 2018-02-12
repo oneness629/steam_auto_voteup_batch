@@ -64,7 +64,20 @@ def login_from(driver):
     # （login_twofactorauth_buttonsets 或者 login_twofactorauth_buttonset_entercode是2个提交和请求协助按钮的父div的id）
     WebDriverWait(driver, 5, 1).until(lambda driver_param : driver_param.find_element_by_id('login_twofactorauth_buttonset_entercode').is_displayed())
 
-    login_code = raw_input("请输入2次验证码：")
+    login_code = ''
+    is_auto_login_not_tip = user_dict['is_auto_login_not_tip']
+    if is_auto_login_not_tip is False:
+        login_code = raw_input("请输入2次验证码：")
+    else:
+        # 读取备用验证码数组文件
+        array = eval(open('backup_code.array', 'r').read())
+        if array is not None and array[0] is not None:
+            logging.warn('使用备用码>' + str(array[0]))
+            login_code = array[0]
+            array.remove(array[0])
+            logging.warn('剩余' + len(array) + '个备用码')
+            open('backup_code.array', 'w+').write(str(array))
+        pass
 
     # 输入验证码并输入回车
     driver.find_element_by_id('twofactorcode_entry').send_keys(login_code)
@@ -73,6 +86,7 @@ def login_from(driver):
     # 需要等待并检查页面内容 否则不能确定是否成功
     # 检查 id： account_pulldown的element的text是否包含用户名，不存在都算失败
     WebDriverWait(driver, 10, 2).until(lambda driver_param : driver_param.find_element_by_id('account_pulldown').is_displayed())
+    logging.info('用户登录成功')
 
     # 写入cookie以便下次使用
     set_cookie_content(str(driver.get_cookies()))
