@@ -22,7 +22,10 @@
   "firefox_path" : "D:/PortableApps/PortableApps/FirefoxPortable/App/Firefox64/firefox.exe",
 
   "_PhantomJs  可执行文件路径" : "（根据browser_driver_type配置选填）",
-  "phantomjs_path" : "D:/GreenProgramFiles/phantomjs-2.1.1-windows/bin/phantomjs.exe"
+  "phantomjs_path" : "D:/GreenProgramFiles/phantomjs-2.1.1-windows/bin/phantomjs.exe",
+
+  "_is_write_html是否在打开浏览器的同时写入html保留记录" : "true or false",
+  "is_write_html" : false
 
 
 

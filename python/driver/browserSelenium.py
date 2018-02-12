@@ -35,6 +35,9 @@ class Browser():
     # 浏览器可见性
     browser_visible = False
 
+    # 在打开浏览器的同时是否需要保存html文件
+    is_write_html = False
+
     # 浏览器驱动
     driver=None
 
@@ -48,6 +51,8 @@ class Browser():
             config_dict = load_config()
             self.browser_visible = config_dict['browser_visible']
             logging.info('浏览器是否显示：' + str(self.browser_visible))
+            self.is_write_html = config_dict['is_write_html']
+            logging.info('浏览器是否保存打开的HTML文件：' + str(self.is_write_html))
             self.driver_type = config_dict['browser_driver_type']
             logging.info('浏览器驱动类型：' + self.driver_type)
             self.firefox_path = config_dict['firefox_path']
@@ -81,9 +86,11 @@ class Browser():
 
 
     # 打开浏览器并处理信息
-    def open_browser(self, url, functions, driver=None, is_close=True, browser_visible=None):
+    def open_browser(self, url, functions, driver=None, is_close=True, browser_visible=None, is_write_html=None):
         if browser_visible is None:
             browser_visible = self.browser_visible
+        if is_write_html is None:
+            is_write_html = self.is_write_html
 
         # 返回值
         return_dict = {}
@@ -93,7 +100,7 @@ class Browser():
             else:
                 self.driver = driver
 
-            if url is not None:
+            if url is not None and is_write_html is True:
                 logging.info(u'URL :' + url)
                 self.driver.get(url)
 
