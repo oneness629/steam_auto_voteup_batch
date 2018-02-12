@@ -4,8 +4,6 @@ import logging
 import sys
 import os
 
-logging.basicConfig(level=logging.INFO)
-
 # 编码问题
 reload(sys)
 sys.setdefaultencoding('utf8')
