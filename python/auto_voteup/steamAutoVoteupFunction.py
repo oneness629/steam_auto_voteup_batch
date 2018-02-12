@@ -22,6 +22,8 @@ sys.setdefaultencoding('utf8')
 def write_login_cookie_to_browser_content(driver):
     cookie_content = get_cookie_content()
     if cookie_content is not None :
+        driver.get(get_check_is_login_url('oneness629'))
+
         logging.debug('读取到的cookie内容为 ->' + cookie_content)
         cookies_dict = eval(cookie_content)
         for cookie in cookies_dict:

@@ -50,7 +50,7 @@ _check_is_login_url_model = 'https://steamcommunity.com/id/#steam_id#/home/'
 def get_check_is_login_url(steam_id):
     if steam_id is not None:
         url = _check_is_login_url_model.replace('#steam_id#', steam_id)
-        logging.info("检查URL地址："+url)
+        logging.info("返回URL地址："+url)
         return url
     else:
         logging.info('steam_id参数为空')
