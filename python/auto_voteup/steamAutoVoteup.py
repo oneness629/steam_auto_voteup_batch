@@ -58,14 +58,8 @@ def voteup():
 
 # 自动点赞
 def auto_voteup():
-    try:
-        check_login_user()
-        voteup()
-    except Exception as e:
-        logging.exception(e)
-    finally:
-        # browser.close_browser()
-        pass
+    check_login_user()
+    voteup()
 
 # 点赞次数
 voteup_count = 99999
@@ -80,7 +74,9 @@ def main():
                 auto_voteup()
             except BaseException as e:
                 logging.exception(e)
-            logging.info('第' + str(i+1) + '次点赞操作结束')
+                logging.error('第' + str(i+1) + '次点赞操作出现异常')
+            else:
+                logging.info('第' + str(i+1) + '次点赞操作结束')
             logging.info('等待' + str(voteup_timeout) + '秒后继续操作')
             time.sleep(voteup_timeout)
         # 程序正常退出

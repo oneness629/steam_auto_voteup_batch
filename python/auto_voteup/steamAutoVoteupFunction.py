@@ -49,45 +49,40 @@ def check_steam_user_is_login(driver):
     except NoSuchElementException as e:
         logging.info('没有读取到登录表单，说明已经登录 -> ' + e.message)
         return True
-    except BaseException as e:
-        logging.exception(e)
     return False
 
 # 用户表单登录
 def login_from(driver):
-    try:
-        user_dict = load_user_login_config()
-        if user_dict is None:
-            logging.warn('读取用户配置信息失败')
-            return '读取用户配置信息失败'
-
-        # 直接用API
-        # WebDriver.find_element_by_id().is_displayed()
-        driver.find_element_by_id('steamAccountName').send_keys(user_dict['steam_id'])
-        driver.find_element_by_id('steamPassword').send_keys(user_dict['steam_password'])
-        driver.find_element_by_id('loginForm').submit()
-
-        # 检查2次登录弹窗是否显示
-        # （login_twofactorauth_buttonsets 或者 login_twofactorauth_buttonset_entercode是2个提交和请求协助按钮的父div的id）
-        WebDriverWait(driver, 5, 1).until(lambda driver_param : driver_param.find_element_by_id('login_twofactorauth_buttonset_entercode').is_displayed())
-
-        login_code = raw_input("请输入2次验证码：")
-
-        # 输入验证码并输入回车
-        driver.find_element_by_id('twofactorcode_entry').send_keys(login_code)
-        driver.find_element_by_id('twofactorcode_entry').send_keys(Keys.ENTER)
-
-        # 需要等待并检查页面内容 否者不能确定是否成功 暂时等待10s
-        logging.info('等待10s')
-        time.sleep(10)
-
-        # 写入cookie以便下次使用
-        set_cookie_content(str(driver.get_cookies()))
-
-        return True
-    except BaseException as e:
-        logging.exception(e)
+    user_dict = load_user_login_config()
+    if user_dict is None:
+        logging.warn('读取用户配置信息失败')
         return False
+
+    # 直接用API
+    # WebDriver.find_element_by_id().is_displayed()
+    driver.find_element_by_id('steamAccountName').send_keys(user_dict['steam_id'])
+    driver.find_element_by_id('steamPassword').send_keys(user_dict['steam_password'])
+    driver.find_element_by_id('loginForm').submit()
+
+    # 检查2次登录弹窗是否显示
+    # （login_twofactorauth_buttonsets 或者 login_twofactorauth_buttonset_entercode是2个提交和请求协助按钮的父div的id）
+    WebDriverWait(driver, 5, 1).until(lambda driver_param : driver_param.find_element_by_id('login_twofactorauth_buttonset_entercode').is_displayed())
+
+    login_code = raw_input("请输入2次验证码：")
+
+    # 输入验证码并输入回车
+    driver.find_element_by_id('twofactorcode_entry').send_keys(login_code)
+    driver.find_element_by_id('twofactorcode_entry').send_keys(Keys.ENTER)
+
+    # 需要等待并检查页面内容 否则不能确定是否成功
+    # 检查 id： account_pulldown的element的text是否包含用户名，不存在都算失败
+    WebDriverWait(driver, 10, 2).until(lambda driver_param : driver_param.find_element_by_id('account_pulldown').is_displayed())
+
+    # 写入cookie以便下次使用
+    set_cookie_content(str(driver.get_cookies()))
+
+    return True
+
 
 # 设置点赞cookie
 def set_voteup_cookie(driver):

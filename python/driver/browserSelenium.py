@@ -128,6 +128,8 @@ class Browser():
             logging.exception(e)
         except Exception as e:
             logging.exception(e)
+            # 其它异常，抛出
+            raise e
         finally:
             if driver is not None:
                 if is_close is True:
