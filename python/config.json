@@ -25,8 +25,9 @@
   "phantomjs_path" : "D:/GreenProgramFiles/phantomjs-2.1.1-windows/bin/phantomjs.exe",
 
   "_is_write_html是否在打开浏览器的同时写入html保留记录" : "true or false",
-  "is_write_html" : false
+  "is_write_html" : false,
 
-
+  "_is_exe_pkill_command 是否执行pkill firefox类似命令（linux用，可能会影响到其它浏览器，但能释放部分内存）" : "true or false",
+  "is_exe_pkill_command" : true
 
 }

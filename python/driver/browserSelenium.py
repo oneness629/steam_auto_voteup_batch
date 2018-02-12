@@ -38,6 +38,9 @@ class Browser():
     # 在打开浏览器的同时是否需要保存html文件
     is_write_html = False
 
+    # 在浏览器操作出现异常时是否执行pkill firefox类似命令（linux专用，可能会影响到其它浏览器，但能释放部分内存）
+    is_exe_pkill_command = True
+
     # 浏览器驱动
     driver=None
 
@@ -53,6 +56,8 @@ class Browser():
             logging.info('浏览器是否显示：' + str(self.browser_visible))
             self.is_write_html = config_dict['is_write_html']
             logging.info('浏览器是否保存打开的HTML文件：' + str(self.is_write_html))
+            self.is_exe_pkill_command = config_dict['is_exe_pkill_command']
+            logging.info('浏览器操作异常是否结束所有浏览器进程：' + str(self.is_exe_pkill_command))
             self.driver_type = config_dict['browser_driver_type']
             logging.info('浏览器驱动类型：' + self.driver_type)
             self.firefox_path = config_dict['firefox_path']
@@ -118,6 +123,8 @@ class Browser():
             logging.exception('遇到浏览器异常，清空浏览器引用，请确保浏览器进程已经结束，下次执行将自动启动新浏览器。')
             self.driver = None
             driver = None
+            if self.is_exe_pkill_command is True:
+                os.system('pkill firefox')
             logging.exception(e)
         except Exception as e:
             logging.exception(e)
