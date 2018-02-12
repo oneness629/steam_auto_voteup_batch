@@ -73,6 +73,7 @@ def get_cookie_content():
 # 设置cookie内容
 def set_cookie_content(cookie_content):
     try:
+        logging.info('写入cookie到' + temp_cookie_file +'以便下次使用')
         with open(temp_cookie_file, 'w+') as cookie_file:
             data = cookie_file.write(cookie_content)
     except BaseException as e:
