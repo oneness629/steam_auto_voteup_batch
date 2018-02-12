@@ -75,7 +75,7 @@ def login_from(driver):
             logging.warn('使用备用码>' + str(array[0]))
             login_code = array[0]
             array.remove(array[0])
-            logging.warn('剩余' + len(array) + '个备用码')
+            logging.warn('剩余' + str(len(array)) + '个备用码')
             open('backup_code.array', 'w+').write(str(array))
         pass
 
