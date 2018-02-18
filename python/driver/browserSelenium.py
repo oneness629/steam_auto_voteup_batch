@@ -101,10 +101,11 @@ class Browser():
             else:
                 self.driver = driver
 
-            if url is not None and is_write_html is True:
-                logging.info(u'URL :' + url)
+            if url is not None:
+                logging.info(u'打开URL:' + url)
                 self.driver.get(url)
 
+            if is_write_html is True:
                 logging.info(u'将页面内容写入到文件')
                 return_dict['_html_'] = self.write_current_time_html_file(self.driver.page_source)
 
@@ -119,6 +120,7 @@ class Browser():
             logging.exception('遇到浏览器异常，清空浏览器引用，请确保浏览器进程已经结束，下次执行将自动启动新浏览器。')
             self.driver = None
             driver = None
+            self.close_browser()
             if self.is_exe_pkill_command is True:
                 os.system('pkill firefox')
             logging.exception(e)
