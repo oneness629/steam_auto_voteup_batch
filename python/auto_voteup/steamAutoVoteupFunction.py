@@ -62,7 +62,7 @@ def login_from(driver):
 
     # 检查2次登录弹窗是否显示
     # （login_twofactorauth_buttonsets 或者 login_twofactorauth_buttonset_entercode是2个提交和请求协助按钮的父div的id）
-    WebDriverWait(driver, 5, 1).until(lambda driver_param : driver_param.find_element_by_id('login_twofactorauth_buttonset_entercode').is_displayed())
+    WebDriverWait(driver, 20, 1, False).until(lambda driver_param : driver_param.find_element_by_id('login_twofactorauth_buttonset_entercode').is_displayed())
 
     login_code = ''
     is_auto_login_not_tip = user_dict['is_auto_login_not_tip']
