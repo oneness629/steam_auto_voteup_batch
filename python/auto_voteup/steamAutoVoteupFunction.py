@@ -2,7 +2,7 @@
 import logging
 import sys
 
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
@@ -62,7 +62,11 @@ def login_from(driver):
 
     # 检查2次登录弹窗是否显示
     # （login_twofactorauth_buttonsets 或者 login_twofactorauth_buttonset_entercode是2个提交和请求协助按钮的父div的id）
-    WebDriverWait(driver, 20, 1, False).until(lambda driver_param : driver_param.find_element_by_id('login_twofactorauth_buttonset_entercode').is_displayed())
+    try:
+        WebDriverWait(driver, 20, 1, False).until(lambda driver_param : driver_param.find_element_by_id('login_twofactorauth_buttonset_entercode').is_displayed())
+    except TimeoutException as e:
+        logging.exception(e)
+        logging.exception('检查2次输入码错误！')
 
     login_code = ''
     is_auto_login_not_tip = user_dict['is_auto_login_not_tip']
