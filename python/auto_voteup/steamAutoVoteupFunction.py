@@ -17,9 +17,7 @@ sys.setdefaultencoding('utf8')
 # 写入登录cookie内容
 def write_login_cookie_to_browser_content(driver):
     cookie_content = get_cookie_content()
-    if cookie_content is not None :
-        driver.get(get_check_is_login_url('oneness629'))
-
+    if cookie_content is not None and len(cookie_content) > 0:
         logging.debug('读取到的cookie内容为 ->' + cookie_content)
         cookies_dict = eval(cookie_content)
         for cookie in cookies_dict:
@@ -27,7 +25,7 @@ def write_login_cookie_to_browser_content(driver):
             driver.add_cookie({'name' : cookie['name'], 'value' : cookie['value']})
         # 添加好cookie后要刷新
         logging.debug('读取cookie并重新写入到浏览器成功，重新刷新页面')
-        driver.get(get_check_is_login_url('oneness629'))
+        driver.refresh()
         return True
     else:
         logging.info("cookie临时文件为空，不设置登录cookie")
@@ -35,17 +33,40 @@ def write_login_cookie_to_browser_content(driver):
 
 # 检查用户是否登录 true 已经登录，false 未登录
 def check_steam_user_is_login(driver):
-    try:
-        loginform = driver.find_element_by_id('loginForm')
-        logging.info("登录表单："+str(loginform))
-        if loginform is not None:
+    is_exist_login_form = check_element_is_exist(driver, 'loginForm')
+    if is_exist_login_form is True:
+        logging.info('读取到登录表单(loginForm)，用户未登录。')
+        return False
+    else:
+        is_exist_login_form = check_element_is_exist(driver, 'login_form')
+        if is_exist_login_form is True:
             return False
         else:
+            logging.info('读取到登录表单(login_form)，用户未登录。')
+            return True
+
+
+# 在浏览器中检查element是否存在
+def check_element_is_exist(driver, element_id):
+    try:
+        element = driver.find_element_by_id(element_id)
+        if element is not None:
             return True
     except NoSuchElementException as e:
-        logging.info('没有读取到登录表单，说明已经登录 -> ' + e.message)
-        return True
+        logging.exception('没有在浏览器中找到ID为' + element_id + '的Element')
     return False
+
+def get_steam_login_form_id(driver):
+    is_exist_login_form = check_element_is_exist(driver, 'loginForm')
+    if is_exist_login_form is True:
+        return 'loginForm'
+    else:
+        is_exist_login_form = check_element_is_exist(driver, 'login_form')
+        if is_exist_login_form is True:
+            return 'login_form'
+        else:
+            logging.info('该页面没有steam登录表单')
+            return None
 
 # 用户表单登录
 def login_from(driver):
@@ -54,11 +75,26 @@ def login_from(driver):
         logging.warn('读取用户配置信息失败')
         return False
 
-    # 直接用API
-    # WebDriver.find_element_by_id().is_displayed()
-    driver.find_element_by_id('steamAccountName').send_keys(user_dict['steam_id'])
-    driver.find_element_by_id('steamPassword').send_keys(user_dict['steam_password'])
-    driver.find_element_by_id('loginForm').submit()
+    # 检查是否有 remember_login 在这台电脑上记住我 复选框
+    try:
+        remember_login = driver.find_element_by_id('remember_login')
+        if remember_login is not None:
+            #  按空格自动checked
+            remember_login.send_keys(Keys.SPACE)
+            logging.info("勾选 在这台电脑上记住我（div id : remember_login） 复选框。")
+    except BaseException as e:
+        logging.exception("没有找到 在这台电脑上记住我（div id : remember_login） 复选框，不进行勾选操作。")
+
+    # steam 登录页面存在2种不同的表单和对应值
+    login_from_id = get_steam_login_form_id(driver)
+    if login_from_id == 'loginForm':
+        driver.find_element_by_id('steamAccountName').send_keys(user_dict['steam_id'])
+        driver.find_element_by_id('steamPassword').send_keys(user_dict['steam_password'])
+        driver.find_element_by_id('steamPassword').send_keys(Keys.ENTER)
+    elif  login_from_id == 'login_form':
+        driver.find_element_by_id('input_username').send_keys(user_dict['steam_id'])
+        driver.find_element_by_id('input_password').send_keys(user_dict['steam_password'])
+        driver.find_element_by_id('input_password').send_keys(Keys.ENTER)
 
     # 检查用户名密码是否正确
     WebDriverWait(driver, 20, 1).until(_check_user_and_password_is_success, '检查超时:检查用户名密码是否正确超时')
