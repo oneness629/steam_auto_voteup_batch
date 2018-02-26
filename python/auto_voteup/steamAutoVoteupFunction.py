@@ -60,13 +60,8 @@ def login_from(driver):
     driver.find_element_by_id('steamPassword').send_keys(user_dict['steam_password'])
     driver.find_element_by_id('loginForm').submit()
 
-    # 检查2次登录弹窗是否显示
-    # （login_twofactorauth_buttonsets 或者 login_twofactorauth_buttonset_entercode是2个提交和请求协助按钮的父div的id）
-    try:
-        WebDriverWait(driver, 20, 1, False).until(lambda driver_param : driver_param.find_element_by_id('login_twofactorauth_buttonset_entercode').is_displayed())
-    except TimeoutException as e:
-        logging.exception(e)
-        logging.exception('检查2次输入码错误！')
+    # 检查用户名密码是否正确
+    WebDriverWait(driver, 20, 1).until(_check_user_and_password_is_success, '检查超时:检查用户名密码是否正确超时')
 
     login_code = ''
     is_auto_login_not_tip = user_dict['is_auto_login_not_tip']
@@ -89,13 +84,47 @@ def login_from(driver):
 
     # 需要等待并检查页面内容 否则不能确定是否成功
     # 检查 id： account_pulldown的element的text是否包含用户名，不存在都算失败
-    WebDriverWait(driver, 10, 2).until(lambda driver_param : driver_param.find_element_by_id('account_pulldown').is_displayed())
+    # WebDriverWait(driver, 10, 2).until(lambda driver_param : driver_param.find_element_by_id('account_pulldown').is_displayed())
+    WebDriverWait(driver, 20, 2).until(_check_user_is_login_success, '检查超时:无法获取到用户是否登录成功标签DIV信息')
+
     logging.info('用户登录成功')
 
     # 写入cookie以便下次使用
     set_cookie_content(str(driver.get_cookies()))
 
     return True
+
+# 检查用户名密码是否正确
+def _check_user_and_password_is_success(driver):
+    # error_display 错误提示div id
+    error_display = driver.find_element_by_id('error_display')
+    if error_display is None:
+        logging.info('检查用户密码是否正确标签DIV为空，稍后再试。')
+        return False
+    if error_display is not None and error_display.is_displayed():
+        raise BaseException('登录异常，提示信息为：' + error_display.text)
+    else:
+        # 如果没有找到error_display 用户密码正确，要求输入2次验证码
+        # login_twofactorauth_buttonset_entercode  2次验证码弹出DIV
+        login_twofactorauth_buttonset_entercode = driver.find_element_by_id('login_twofactorauth_buttonset_entercode')
+        if login_twofactorauth_buttonset_entercode is not None and login_twofactorauth_buttonset_entercode.is_displayed():
+            return True
+    return False
+
+# 检查用户是否登录成功
+def _check_user_is_login_success(driver):
+    global_action_menu = driver.find_element_by_id('global_action_menu')
+    if global_action_menu is not None:
+        global_action_menu_text = global_action_menu.text
+        logging.info('用户是否成功检查标记内容: ' + global_action_menu_text)
+        # 如果登录成功，这个div中将显示用户名
+        if global_action_menu_text.find('oneness629') != -1:
+            logging.info('检查到用户登录')
+            return True
+    else:
+        logging.info('用户是否成功检查标记内容为空，稍后再次尝试。')
+    return False
+
 
 
 # 添加jquery Js文件
