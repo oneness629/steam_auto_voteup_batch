@@ -20,8 +20,6 @@ browser = Browser()
 # 登录用户检查
 def check_login_user():
     functions = {
-        # 添加jquery支持，防止出现jquery not define的问题
-        'add_jquery_js' : add_jquery_js,
         # 写入存在的登录cookie
         'write_login_cookie_to_browser_content': write_login_cookie_to_browser_content,
         # 检查用户是否登录

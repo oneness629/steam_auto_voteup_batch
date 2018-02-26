@@ -126,14 +126,6 @@ def _check_user_is_login_success(driver):
     return False
 
 
-
-# 添加jquery Js文件
-def add_jquery_js(driver):
-    script = open('./script/jquery-3.3.1.min.js').read();
-    driver.execute_script(script);
-    return True
-
-
 # 设置点赞cookie
 def set_voteup_cookie(driver):
     script = open('./script/voteupCookie.js').read();
