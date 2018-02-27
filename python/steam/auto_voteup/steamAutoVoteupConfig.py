@@ -10,7 +10,7 @@ sys.setdefaultencoding('utf8')
 logging.info('当前工作目录：' + os.path.abspath('.'))
 
 #配置文件名称
-config_file = 'config.json'
+config_file = '../config/config.json'
 
 # 读取配置文件
 def load_config():

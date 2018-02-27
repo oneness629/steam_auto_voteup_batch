@@ -8,7 +8,7 @@
   "_steam_password" : "input steam password",
 
   "_is_auto_login_not_tip 是否为自动登录[不会提示输入密码，2次验证码等信息]" : "true or false",
-  "is_auto_login_not_tip" : true,
+  "is_auto_login_not_tip" : false,
 
   "_点赞次数" : 999999,
   "voteup_count" : 999999,
@@ -16,7 +16,7 @@
 
   "_浏览器相关配置" : "-------------------------",
   "_浏览器是否可见 true （可见）或者 false （不可见）" : true,
-  "browser_visible" : false,
+  "browser_visible" : true,
 
   "_浏览器驱动类型" : "(FireFox、PhantomJs)",
   "browser_driver_type" : "FireFox",
@@ -31,6 +31,6 @@
   "is_write_html" : false,
 
   "_is_exe_pkill_command 是否执行pkill firefox类似命令（linux用，可能会影响到其它浏览器，但能释放部分内存）" : "true or false",
-  "is_exe_pkill_command" : true
+  "is_exe_pkill_command" : false
 
 }

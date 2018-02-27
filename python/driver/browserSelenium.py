@@ -6,7 +6,7 @@ from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.firefox.options import Options
 
-from auto_voteup.steamAutoVoteupConfig import *
+from steam.auto_voteup.steamAutoVoteupConfig import *
 
 # 编码问题
 reload(sys)

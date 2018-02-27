@@ -5,8 +5,8 @@ from selenium.webdriver.firefox import webdriver
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 
-from auto_voteup.steamAutoVoteupConfig import *
-from auto_voteup.steamAutoVoteupFunction import *
+from steam.auto_voteup.steamAutoVoteupConfig import *
+from steam.auto_voteup.steamAutoVoteupFunction import *
 from driver.browserSelenium import Browser
 
 
