@@ -11,6 +11,8 @@ sys.setdefaultencoding('utf8')
 
 # 获取备用码并写入到文件
 def write_twofactor_emergency_code_to_file(driver):
+    WebDriverWait(driver, 20, 2).until(_check_steam_authenticator_emergency_codes_is_displayed, '检查超时:检查获取备用令牌码按钮操作超时')
+
     steam_authenticator_emergency_codes = driver.find_element_by_id('steam_authenticator_emergency_codes')
     # 提交获取备用码表单
     steam_authenticator_emergency_codes.submit()
@@ -43,6 +45,17 @@ def write_twofactor_emergency_code_to_file(driver):
 
     return False
 
+# 检查 获取 Steam 备用令牌码 表单是否存在
+def _check_steam_authenticator_emergency_codes_is_displayed(driver):
+    try:
+        twofactor_settings_input = driver.find_element_by_class_name('steam_authenticator_emergency_codes')
+        if twofactor_settings_input is not None:
+            return True
+    except BaseException as e:
+        logging.warn("没有找到 class name为'steam_authenticator_emergency_codes'的Element。")
+        return False
+
+
 # 检查二次认证备份码是否存在并显示在网页
 def _check_twofactor_backup_code_is_show(driver):
     try:
@@ -50,7 +63,7 @@ def _check_twofactor_backup_code_is_show(driver):
         if twofactor_settings_input is not None:
             return True
     except BaseException as e:
-        logging.exception("没有找到 class name为'twofactor_emergency_code_left'的Element。")
+        logging.warn("没有找到 class name为'twofactor_emergency_code_left'的Element。")
         return False
 
 
@@ -62,5 +75,5 @@ def _check_twofactor_settings_input_is_displayed(driver):
         if twofactor_settings_input is not None:
             return True
     except BaseException as e:
-        logging.exception("没有找到 class name为'twofactor_settings_input'的Element。")
+        logging.warn("没有找到 class name为'twofactor_settings_input'的Element。")
         return False

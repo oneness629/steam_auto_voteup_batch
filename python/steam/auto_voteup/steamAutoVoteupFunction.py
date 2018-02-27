@@ -7,6 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 
 from commom.config import get_cookie_content, set_cookie_content
+from driver.browserFunction import check_element_is_exist
 from steam.config.steamConfig import load_user_login_config
 
 
@@ -44,17 +45,6 @@ def check_steam_user_is_login(driver):
         else:
             logging.info('读取到登录表单(login_form)，用户未登录。')
             return True
-
-
-# 在浏览器中检查element是否存在
-def check_element_is_exist(driver, element_id):
-    try:
-        element = driver.find_element_by_id(element_id)
-        if element is not None:
-            return True
-    except NoSuchElementException as e:
-        logging.exception('没有在浏览器中找到ID为' + element_id + '的Element')
-    return False
 
 def get_steam_login_form_id(driver):
     is_exist_login_form = check_element_is_exist(driver, 'loginForm')

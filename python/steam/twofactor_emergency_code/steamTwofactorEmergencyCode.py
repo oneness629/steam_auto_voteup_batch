@@ -42,3 +42,23 @@ def get_twofactor_emergency_code():
 def get_twofactor_emergency_code_url():
     return 'https://store.steampowered.com/twofactor/manage_action'
 
+# 获取备用码主函数
+def main():
+    try:
+        logging.info('即将获取steam2次验证紧急备用码')
+        try:
+            get_twofactor_emergency_code()
+        except BaseException as e:
+            raise BaseException('获取steam2次验证紧急备用码异常')
+        else:
+            logging.info('获取steam2次验证紧急备用码成功')
+            # 程序正常退出
+            return 0
+    except BaseException as e:
+        logging.exception(e)
+        # 程序异常退出
+        return 1
+    finally:
+        # 最后要关闭浏览器
+        browser.close_browser()
+        logging.info('关闭浏览器成功')
