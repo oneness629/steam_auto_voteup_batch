@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import sys
+import numpy
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.keys import Keys
@@ -32,14 +33,19 @@ def get_backup_code_to_file(driver):
     # twofactor_emergency_code_left -> 每一个验证码 class name
 
     twofactor_emergency_code_left_list = driver.find_elements_by_class_name('twofactor_emergency_code_left')
-    logging.info('twofactor_emergency_code_left : ' + str(twofactor_emergency_code_left_list))
-    logging.info('twofactor_emergency_code_left len: ' + str(len(twofactor_emergency_code_left_list)))
-    #10个 还有下面2行
-    #twofactor_emergency_code
-    #twofactor_emergency_code_end
-    for element in twofactor_emergency_code_left_list:
-        logging.info(element.text)
+    twofactor_emergency_code_list = driver.find_elements_by_class_name('twofactor_emergency_code')
 
+    twofactor_emergency_code = twofactor_emergency_code_left_list + twofactor_emergency_code_list
+    logging.info('读取到的备用码如下：')
+    back_code_array = []
+    for element in twofactor_emergency_code:
+        logging.info(element.text)
+        back_code_array.append(element.text)
+
+    if back_code_array is not None and len(back_code_array) > 0:
+
+        logging.warn('保存新的备用码一共' + str(len(back_code_array)) + '个')
+        open('backup_code.array', 'w+').write(str(back_code_array))
 
     return False
 
