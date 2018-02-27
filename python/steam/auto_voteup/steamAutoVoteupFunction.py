@@ -164,13 +164,13 @@ def _check_user_is_login_success(driver):
 
 # 设置点赞cookie
 def set_voteup_cookie(driver):
-    script = open('./script/voteupCookie.js').read();
+    script = open('../config/js/voteupCookie.js').read();
     driver.execute_script(script);
     return True
 
 # 执行steam自动点赞js脚本
 def exec_steam_auto_voteup_batch_script(driver):
-    script = open('./../steam_auto_voteup_batch.user.js').read();
+    script = open('../../steam_auto_voteup_batch.user.js').read();
     driver.execute_script(script);
     return True
 
