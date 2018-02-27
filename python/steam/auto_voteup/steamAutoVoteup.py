@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
 import time
-import json
-from selenium.webdriver.firefox import webdriver
-from selenium.webdriver.firefox.webdriver import WebDriver
-from selenium.webdriver.support.wait import WebDriverWait
 
-from steam.auto_voteup.steamAutoVoteupConfig import *
+from commom.config import *
 from steam.auto_voteup.steamAutoVoteupFunction import *
 from driver.browserSelenium import Browser
-
+from steam.config.steamConfig import get_check_is_login_url
 
 # 编码问题
 reload(sys)

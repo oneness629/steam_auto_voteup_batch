@@ -2,20 +2,15 @@
 import logging
 import sys
 
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
-
-from steam.auto_voteup.steamAutoVoteupConfig import load_user_login_config, get_cookie_content, set_cookie_content, \
-    get_check_is_login_url
 
 # 编码问题
 reload(sys)
 sys.setdefaultencoding('utf8')
 
 # 获取备用码并写入到文件
-def get_backup_code_to_file(driver):
+def write_twofactor_emergency_code_to_file(driver):
     steam_authenticator_emergency_codes = driver.find_element_by_id('steam_authenticator_emergency_codes')
     # 提交获取备用码表单
     steam_authenticator_emergency_codes.submit()
@@ -44,7 +39,7 @@ def get_backup_code_to_file(driver):
     if back_code_array is not None and len(back_code_array) > 0:
 
         logging.warn('保存新的备用码一共' + str(len(back_code_array)) + '个')
-        open('backup_code.array', 'w+').write(str(back_code_array))
+        open('../config/twofactor_emergency_code.array', 'w+').write(str(back_code_array))
 
     return False
 

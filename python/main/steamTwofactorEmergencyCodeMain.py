@@ -2,9 +2,9 @@
 import json
 import logging.config
 
-from steam.back_code import steamBackCode
+from steam.twofactor_emergency_code import steamTwofactorEmergencyCode
 
 logging.config.dictConfig(json.load(open('../config/logging.json','r')))
 
 if __name__ == '__main__':
-    steamBackCode.get_backup_code()
+    steamTwofactorEmergencyCode.get_twofactor_emergency_code()

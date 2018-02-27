@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-import sys
 import ssl
 import time
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.firefox.options import Options
 
-from steam.auto_voteup.steamAutoVoteupConfig import *
+from commom.config import *
 
 # 编码问题
 reload(sys)
