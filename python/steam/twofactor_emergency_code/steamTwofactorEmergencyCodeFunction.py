@@ -5,8 +5,7 @@ import sys
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 
-# 编码问题
-from steam.auto_voteup.steamAutoVoteupFunction import check_steam_user_is_login, login_from
+from steam.login.steamLoginFunction import check_steam_user_is_login, login_from
 
 reload(sys)
 sys.setdefaultencoding('utf8')

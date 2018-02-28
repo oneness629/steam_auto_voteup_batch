@@ -7,6 +7,8 @@ from driver.browserSelenium import Browser
 from steam.config.steamConfig import get_check_is_login_url
 
 # 编码问题
+from steam.login.steamLoginFunction import write_login_cookie_to_browser_content, check_steam_user_is_login, login_from
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 
