@@ -48,7 +48,7 @@ def write_twofactor_emergency_code_to_file(driver):
     if back_code_array is not None and len(back_code_array) > 0:
 
         logging.warn('保存新的备用码一共' + str(len(back_code_array)) + '个')
-        open('../config/twofactor_emergency_code.array', 'w+').write(str(back_code_array))
+        open('config/twofactor_emergency_code.array', 'w+').write(str(back_code_array))
 
     return False
 

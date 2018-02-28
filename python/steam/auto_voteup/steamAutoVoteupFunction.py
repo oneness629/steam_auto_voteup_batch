@@ -96,13 +96,13 @@ def login_from(driver):
         login_code = raw_input("请输入2次验证码：")
     else:
         # 读取备用验证码数组文件
-        array = eval(open('../config/twofactor_emergency_code.array', 'r').read())
+        array = eval(open('config/twofactor_emergency_code.array', 'r').read())
         if array is not None and array[0] is not None:
             logging.warn('使用备用码>' + str(array[0]))
             login_code = array[0]
             array.remove(array[0])
             logging.warn('剩余' + str(len(array)) + '个备用码')
-            open('../config/twofactor_emergency_code.array', 'w+').write(str(array))
+            open('config/twofactor_emergency_code.array', 'w+').write(str(array))
         pass
 
     # 输入验证码并输入回车
@@ -155,13 +155,13 @@ def _check_user_is_login_success(driver):
 
 # 设置点赞cookie
 def set_voteup_cookie(driver):
-    script = open('../config/js/voteupCookie.js').read();
+    script = open('config/js/voteupCookie.js').read();
     driver.execute_script(script);
     return True
 
 # 执行steam自动点赞js脚本
 def exec_steam_auto_voteup_batch_script(driver):
-    script = open('../../steam_auto_voteup_batch.user.js').read();
+    script = open('../steam_auto_voteup_batch.user.js').read();
     driver.execute_script(script);
     return True
 
