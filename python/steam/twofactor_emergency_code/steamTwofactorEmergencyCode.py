@@ -19,6 +19,10 @@ def get_twofactor_emergency_code():
     functions = {
         # 写入存在的登录cookie
         'write_login_cookie_to_browser_content': write_login_cookie_to_browser_content,
+    }
+    # 要分批次检查URL要重新加载
+    result_dict = browser.open_browser(get_twofactor_emergency_code_url(), functions, browser.driver, False)
+    functions = {
         # 检查用户是否登录
         'check_steam_user_is_login':check_steam_user_is_login
     }

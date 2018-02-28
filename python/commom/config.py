@@ -10,7 +10,7 @@ sys.setdefaultencoding('utf8')
 logging.info('当前工作目录：' + os.path.abspath('.'))
 
 #配置文件名称
-config_file = '../config/config.json'
+config_file = 'config/config.json'
 
 # 读取配置文件
 def load_config():
@@ -25,7 +25,7 @@ def load_config():
         return None
 
 # 临时的cookie文件保存
-temp_cookie_file = '../temp/temp_cookie.dict'
+temp_cookie_file = 'temp/temp_cookie.dict'
 
 # 获取cookie内容
 def get_cookie_content():

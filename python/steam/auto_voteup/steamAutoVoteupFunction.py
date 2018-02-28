@@ -25,7 +25,7 @@ def write_login_cookie_to_browser_content(driver):
             logging.debug('添加cookie ->' + str({'name' : cookie['name'], 'value' : cookie['value']}))
             driver.add_cookie({'name' : cookie['name'], 'value' : cookie['value']})
         # 添加好cookie后要刷新
-        logging.debug('读取cookie并重新写入到浏览器成功，重新刷新页面')
+        logging.info('读取cookie并重新写入到浏览器成功，重新刷新页面')
         driver.refresh()
         return True
     else:
@@ -41,9 +41,10 @@ def check_steam_user_is_login(driver):
     else:
         is_exist_login_form = check_element_is_exist(driver, 'login_form')
         if is_exist_login_form is True:
+            logging.info('读取到登录表单(login_form)，用户未登录。')
             return False
         else:
-            logging.info('读取到登录表单(login_form)，用户未登录。')
+            logging.info('没有读取到登录表单，用户已登录。')
             return True
 
 def get_steam_login_form_id(driver):

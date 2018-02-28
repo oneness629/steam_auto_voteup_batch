@@ -6,6 +6,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 
 # 编码问题
+from steam.auto_voteup.steamAutoVoteupFunction import check_steam_user_is_login, login_from
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -24,6 +26,11 @@ def write_twofactor_emergency_code_to_file(driver):
 
     twofactor_settings_input.send_keys(login_code)
     twofactor_settings_input.send_keys(Keys.ENTER)
+
+    # 这时候可能还会跳到登录页面
+    is_re_login = check_steam_user_is_login(driver)
+    if is_re_login is False:
+        login_from(driver)
 
     WebDriverWait(driver, 20, 2).until(_check_twofactor_backup_code_is_show, '检查超时:检查二次认证备份码是否存在并显示在网页 操作超时')
     # twofactor_emergency_code_left -> 每一个验证码 class name
@@ -48,7 +55,7 @@ def write_twofactor_emergency_code_to_file(driver):
 # 检查 获取 Steam 备用令牌码 表单是否存在
 def _check_steam_authenticator_emergency_codes_is_displayed(driver):
     try:
-        twofactor_settings_input = driver.find_element_by_class_name('steam_authenticator_emergency_codes')
+        twofactor_settings_input = driver.find_element_by_id('steam_authenticator_emergency_codes')
         if twofactor_settings_input is not None:
             return True
     except BaseException as e:

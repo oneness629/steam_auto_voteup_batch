@@ -2,7 +2,7 @@
 import json
 import sys
 import logging.config
-logging.config.dictConfig(json.load(open('../config/logging.json','r')))
+logging.config.dictConfig(json.load(open('config/logging.json','r')))
 
 from steam.auto_voteup import steamAutoVoteup
 
