@@ -73,7 +73,7 @@ def main():
         try:
             get_twofactor_emergency_code()
         except BaseException as e:
-            raise BaseException('获取steam2次验证紧急备用码异常')
+            raise BaseException('获取steam2次验证紧急备用码异常' + e)
         else:
             logging.info('获取steam2次验证紧急备用码成功')
             # 程序正常退出
