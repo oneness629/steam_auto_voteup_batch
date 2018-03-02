@@ -41,6 +41,27 @@ def get_twofactor_emergency_code():
     logging.info('获取备用码并写入到文件结果 : ' + json.dumps(result_dict).decode("unicode-escape"))
 
 
+# 2次验证备用码文件
+twofactor_emergency_code_from_file = 'config/twofactor_emergency_code.array'
+
+# 获取一个备用码
+def get_twofactor_emergency_code_from_file():
+    emergency_code = ''
+    # 读取备用验证码数组文件
+    array = eval(open(twofactor_emergency_code_from_file, 'r').read())
+    if array is not None and array[0] is not None:
+        logging.warn('使用备用码>' + str(array[0]))
+        emergency_code = array[0]
+        array.remove(array[0])
+        logging.warn('剩余' + str(len(array)) + '个备用码')
+        open(twofactor_emergency_code_from_file, 'w+').write(str(array))
+        if len(array) <= 3:
+            # 如果备用码数量小于3，自动获取新的备用码
+            get_twofactor_emergency_code()
+
+    return emergency_code
+
+
 # 获取备用码URL
 def get_twofactor_emergency_code_url():
     return 'https://store.steampowered.com/twofactor/manage_action'

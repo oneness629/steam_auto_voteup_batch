@@ -12,6 +12,8 @@ from steam.config.steamConfig import load_user_login_config
 
 
 # 编码问题
+from steam.twofactor_emergency_code.steamTwofactorEmergencyCode import get_twofactor_emergency_code_from_file
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -90,20 +92,13 @@ def login_from(driver):
     # 检查用户名密码是否正确
     WebDriverWait(driver, 20, 1).until(_check_user_and_password_is_success, '检查超时:检查用户名密码是否正确超时')
 
-    login_code = ''
-    is_auto_login_not_tip = user_dict['is_auto_login_not_tip']
-    if is_auto_login_not_tip is False:
-        login_code = raw_input("请输入2次验证码：")
-    else:
-        # 读取备用验证码数组文件
-        array = eval(open('config/twofactor_emergency_code.array', 'r').read())
-        if array is not None and array[0] is not None:
-            logging.warn('使用备用码>' + str(array[0]))
-            login_code = array[0]
-            array.remove(array[0])
-            logging.warn('剩余' + str(len(array)) + '个备用码')
-            open('config/twofactor_emergency_code.array', 'w+').write(str(array))
-        pass
+    login_code = get_twofactor_emergency_code_from_file()
+    if login_code is None:
+        is_auto_login_not_tip = user_dict['is_auto_login_not_tip']
+        if is_auto_login_not_tip is False:
+            login_code = raw_input("请输入2次验证码：")
+        else:
+            assert BaseException('没有获取到2次验证码。')
 
     # 输入验证码并输入回车
     driver.find_element_by_id('twofactorcode_entry').send_keys(login_code)
