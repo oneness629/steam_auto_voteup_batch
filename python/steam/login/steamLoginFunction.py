@@ -9,7 +9,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from commom.config import get_cookie_content, set_cookie_content
 from driver.browserFunction import check_element_is_exist
 from steam.config.steamConfig import load_user_login_config
-from steam.twofactor_emergency_code.steamTwofactorEmergencyCode import get_twofactor_emergency_code_from_file
+from steam.twofactor_emergency_code.steamTwofactorEmergencyCode import *
 
 # 编码问题
 
