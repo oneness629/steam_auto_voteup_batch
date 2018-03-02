@@ -12,7 +12,7 @@ from steam.config.steamConfig import load_user_login_config
 
 
 # 编码问题
-from steam.twofactor_emergency_code.steamTwofactorEmergencyCode import get_twofactor_emergency_code_from_file
+from steam.twofactor_emergency_code.steamTwofactorEmergencyCode import *
 
 reload(sys)
 sys.setdefaultencoding('utf8')

@@ -6,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 
 from steam.login.steamLoginFunction import check_steam_user_is_login, login_from
-from steam.twofactor_emergency_code.steamTwofactorEmergencyCode import get_twofactor_emergency_code_from_file
+import steam.twofactor_emergency_code.steamTwofactorEmergencyCode
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -22,7 +22,7 @@ def write_twofactor_emergency_code_to_file(driver):
     WebDriverWait(driver, 20, 2).until(_check_twofactor_settings_input_is_displayed, '检查超时:检查输入2次验证码的输入文本框是否存在并显示操作超时')
 
     twofactor_settings_input = driver.find_element_by_class_name('twofactor_settings_input')
-    login_code = get_twofactor_emergency_code_from_file()
+    login_code = steam.get_twofactor_emergency_code_from_file()
     if login_code is None:
         login_code = raw_input("请输入2次验证码：")
 

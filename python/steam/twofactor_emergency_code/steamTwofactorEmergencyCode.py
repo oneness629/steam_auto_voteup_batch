@@ -4,7 +4,7 @@ import json
 from commom.config import *
 from steam.auto_voteup.steamAutoVoteupFunction import *
 from steam.login.steamLoginFunction import write_login_cookie_to_browser_content, check_steam_user_is_login, login_from
-from steam.twofactor_emergency_code.steamTwofactorEmergencyCodeFunction import write_twofactor_emergency_code_to_file
+import steam.twofactor_emergency_code.steamTwofactorEmergencyCodeFunction
 from driver.browserSelenium import Browser
 
 reload(sys)
@@ -35,7 +35,7 @@ def get_twofactor_emergency_code():
 
     functions = {
         # 获取备用码
-        'write_twofactor_emergency_code_to_file': write_twofactor_emergency_code_to_file,
+        'write_twofactor_emergency_code_to_file': steam.write_twofactor_emergency_code_to_file,
     }
     result_dict = browser.open_browser(None, functions, browser.driver, False)
     logging.info('获取备用码并写入到文件结果 : ' + json.dumps(result_dict).decode("unicode-escape"))
