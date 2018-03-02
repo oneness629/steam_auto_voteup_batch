@@ -6,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 
 from steam.login.steamLoginFunction import check_steam_user_is_login, login_from
-from steam.twofactor_emergency_code.steamTwofactorEmergencyCode import get_twofactor_emergency_code_from_file
+from steam.twofactor_emergency_code.steamTwofactorEmergencyCode import *
 
 
 reload(sys)
