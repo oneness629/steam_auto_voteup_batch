@@ -2,8 +2,8 @@
 // @name        Steam社区自动点赞脚本[测试版]
 // @namespace   com.wt629.steam.voteup.auto.batch
 // @description Steam社区自动点赞脚本,在steam动态页面上添加自动点赞.
-// @include     http://steamcommunity.com/id/*/home/
-// @version     1.7
+// @include     http*://steamcommunity.com/id/*/home/
+// @version     1.8
 // ==/UserScript==
 var controlPanelHtml = `
 <div id='wt629_com_controlPanel' style='font-size: 10px; position:fixed; top: 10px; left: 10px; background-color: red; z-index: 450; color: white; width : 300px;'>
