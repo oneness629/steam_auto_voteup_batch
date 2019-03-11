@@ -3,7 +3,7 @@
 // @namespace   com.wt629.steam.voteup.auto.batch
 // @description Steam社区自动点赞脚本,在steam动态页面上添加自动点赞.
 // @include     http*://steamcommunity.com/id/*/home/ 
-// @include     https://steamcommunity.com/profiles/*/home/
+// @include     http*://steamcommunity.com/profiles/*/home/
 // @version     1.9
 // ==/UserScript==
 var controlPanelHtml = `
