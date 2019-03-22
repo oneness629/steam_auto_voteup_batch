@@ -2,3 +2,5 @@
 *.pyc
 *.log
 python/temp/
+venv/
+python/config/twofactor_emergency_code.array
