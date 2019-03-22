@@ -4,7 +4,7 @@
 // @description Steam社区自动点赞脚本,在steam动态页面上添加自动点赞.
 // @include     http*://steamcommunity.com/id/*/home/ 
 // @include     http*://steamcommunity.com/profiles/*/home/
-// @version     2.0
+// @version     2.1
 // @require     https://code.jquery.com/jquery-2.2.4.min.js
 // ==/UserScript==
 (function() {
@@ -16,6 +16,19 @@
 			isShow: true,
 			isTimedRefresh: false,
 			refreshTimeout : 60,
+
+			// 用户状态
+			thumbUpUserStatus: true,
+			// 收藏和发布艺术作品
+			thumbUpWorkshopItemPublished: true,
+			// 购买游戏
+			thumbUpGamePurchase: true,
+			// 截图
+			thumbUpScreenshot  : true,
+			// 评测
+			thumbUpRecommendation: true,
+			// 评测为不推荐的点欢乐
+			thumbHappyByRecommendation: true,
 		},
 
 		// 添加到页面的HTML
@@ -80,8 +93,8 @@
 				$('#wt629_com_is_timed_refresh').attr('checked','checked');
 			}
 			if (wt629_com_js.config.refreshTimeout == null || wt629_com_js.config.refreshTimeout == '' || isNaN(wt629_com_js.config.refreshTimeout)){
-				wt629_com_js.log('保存的超时时间无法解析或不是数值,修改为默认60000ms ...', true);
-				wt629_com_js.config.refreshTimeout = 60000;
+				wt629_com_js.log('保存的超时时间无法解析或不是数值,修改为默认60s ...', true);
+				wt629_com_js.config.refreshTimeout = 60;
 				// 保存设置
 				wt629_com_js.saveConfig();
 			}
@@ -184,7 +197,12 @@
 			if (wt629_com_js.config.isEnable){
 				wt629_com_js.log('点赞选项已启用 ...', false);
 				// 批量点赞
-				wt629_com_js.thumbUp();
+				// wt629_com_js.thumbUp();
+				wt629_com_js.thumbUpByClass('.blotter_block .blotter_userstatus', false);
+				wt629_com_js.thumbUpByClass('.blotter_block  .blotter_workshopitempublished', false);
+				wt629_com_js.thumbUpByClass('.blotter_block  .blotter_gamepurchase', false);
+				wt629_com_js.thumbUpByClass('.blotter_block  .blotter_screenshot', false);
+				wt629_com_js.thumbUpByClass('.blotter_block .blotter_recommendation', true);
 				wt629_com_js.log('批量点赞完成 ', true);
 
 				var isTimedRefresh = wt629_com_js.config.isTimedRefresh;
@@ -201,17 +219,65 @@
 			}
 		},
 
+		thumbUpByClass: function(className, isThumbHappyByRecommendation) {
+			// 所有点赞按钮
+			// className = '.blotter_block  .blotter_workshopitempublished';
+			var thumbUpObject = $(className);
+			var thumbUpNum = thumbUpObject.length;
+			var thumbUpActiveNum = 0;
+			var thumbUpNotActiveNum = 0;
+			thumbUpObject.each(function(){
+				var activeObject = $(this).find('.active');
+				if (activeObject == null || activeObject.length == 0){
+					thumbUpNotActiveNum ++;
+					var isThumbsUp = false;
+					var isFunny = false;
+					if (isThumbHappyByRecommendation){
+						var thumb = $(this).find('.thumb');
+						if (thumb != null && $(thumb).html() != null){
+							var html = $(thumb).html();
+							if (html.indexOf('thumbsUp.png') > -1){
+								isThumbsUp = true;
+							}else if (html.indexOf('thumbsDown.png') > -1){
+								isFunny = true;
+							}
+						}
+					}else{
+						isThumbsUp = true;
+					}
+					if (isThumbsUp){
+						var thumbUp = $(this).find('.thumb_up');
+						if (thumbUp != null){
+							$(thumbUp).css('border-bottom','1px solid #F00');
+							$(thumbUp).parent().parent().click();
+						}
+					}
+					if (isFunny){
+						var funny = $(this).find('.funny');
+						if (funny != null){
+							$(funny).css('border-bottom','1px solid #F00');
+							$(funny).parent().parent().click();
+						}
+					}
+				}else{
+					thumbUpActiveNum ++;
+				}
+			});
+			console.log(thumbUpNum);
+			console.log(thumbUpActiveNum);
+			console.log(thumbUpNotActiveNum);
+		},
 
 
-
-	thumbUp: function() {
+		thumbUp: function() {
 			wt629_com_js.log('开始点赞 ...',true);
 			// 所有点赞按钮
 			var thumb_up = $('.thumb_up');
-			var num = thumb_up.size();;
+			var num = thumb_up.size();
 			var num_upClick = 0;
 			var num_happyClick = 0;
 			thumb_up.each(function(){
+
 				try{
 					var classStr = $(this).parent().parent().attr('class');
 					// 遍历没有点击的点赞按钮[包含未点击和点击欢乐的]
@@ -267,7 +333,8 @@
 							}
 
 							if (isUpButton){
-								$(thumbUpA).html("["+ $(thumbUpA).html() +"]");
+								// $(thumbUpA).html("["+ $(thumbUpA).html() +"]");
+								$(thumbUpA).css('border-bottom','1px solid #F00');
 								$(thumbUpA).click();
 								num_upClick ++;
 							}
@@ -276,14 +343,16 @@
 								var happyHtml = thumbHappyA.html();
 								if(thumbHappyA.attr('class').indexOf('active') > -1){
 								}else{
-									$(thumbHappyA).html("["+ $(thumbHappyA).html() +"]");
+									// $(thumbHappyA).html("["+ $(thumbHappyA).html() +"]");
+									$(thumbHappyA).css('border-bottom','1px solid #F00');
 									$(thumbHappyA).click();
 									num_happyClick ++;
 								}
 							}
 						} else {
 							// 如果没有欢乐按钮 直接点赞
-							$(thumbUpA).html("["+ $(thumbUpA).html() +"]");
+							// $(thumbUpA).html("["+ $(thumbUpA).html() +"]");
+							$(thumbUpA).css('border-bottom','1px solid #F00');
 							$(thumbUpA).click();
 							num_upClick ++;
 						}
