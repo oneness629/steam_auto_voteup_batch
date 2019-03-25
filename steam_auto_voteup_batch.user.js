@@ -4,7 +4,7 @@
 // @description Steam社区自动点赞脚本,在steam动态页面上添加自动点赞.
 // @include     http*://steamcommunity.com/id/*/home/ 
 // @include     http*://steamcommunity.com/profiles/*/home/
-// @version     2.4
+// @version     2.5
 // @require     https://code.jquery.com/jquery-2.2.4.min.js
 // ==/UserScript==
 (function() {
@@ -228,6 +228,26 @@
 				wt629_com_js.saveConfig();
 				wt629_com_js.log('保存配置 完成 请手动刷新页面加载新配置 ..  ', true);
 			});
+
+			// 手动点赞事件
+			$('#wt629_com_config_thumb_happy_by_recommendation_a').click(function() {
+				wt629_com_js.thumbUpByClass('.blotter_block .blotter_recommendation', true, '用户评测点赞（不推荐欢乐）');
+			});
+			$('#wt629_com_config_thumb_up_game_purchase_a').click(function() {
+				wt629_com_js.thumbUpByClass('.blotter_block  .blotter_gamepurchase', false, '用户购买游戏');
+			});
+			$('#wt629_com_config_thumb_up_recommendation_a').click(function() {
+				wt629_com_js.thumbUpByClass('.blotter_block .blotter_recommendation', false, '用户评测全点赞');
+			});
+			$('#wt629_com_config_thumb_up_screenshot_a').click(function() {
+				wt629_com_js.thumbUpByClass('.blotter_block  .blotter_screenshot', false, '用户截图');
+			});
+			$('#wt629_com_config_thumb_up_user_status_a').click(function() {
+				wt629_com_js.thumbUpByClass('.blotter_block .blotter_userstatus', false, '用户发布的状态');
+			});
+			$('#wt629_com_config_thumb_up_workshop_item_published_a').click(function() {
+				wt629_com_js.thumbUpByClass('.blotter_block  .blotter_workshopitempublished', false, '用户收藏和发布的艺术作品');
+			});
 		},
 
 
@@ -370,7 +390,7 @@
 	wt629_com_js.controlPanelHtml += "\t\t<span id='wt629_com_controlPanel_page_reload_tip' ></span>";
 	wt629_com_js.controlPanelHtml += "\t\t<span id='wt629_com_controlPanel_show_or_hide' ><a href='javascript:void(0);'>显示/隐藏</a></span>";
 	wt629_com_js.controlPanelHtml += "\t</div>";
-	wt629_com_js.controlPanelHtml += "\t<div class='wt629_com_controlPanel_main'>Steam社区自动点赞脚本控制台<br/>[v2.4版->极度缓慢开发中...]-><a href='https://steamcommunity.com/sharedfiles/filedetails/?id=1690131781'>使用详细说明（Steam指南）</a></div>";
+	wt629_com_js.controlPanelHtml += "\t<div class='wt629_com_controlPanel_main'>Steam社区自动点赞脚本控制台<br/>[v2.5版->极度缓慢开发中...]-><a href='https://steamcommunity.com/sharedfiles/filedetails/?id=1690131781'>使用详细说明（Steam指南）</a></div>";
 	wt629_com_js.controlPanelHtml += "\t<div class='wt629_com_controlPanel_main' style='margin-left:20px;'>";
 	wt629_com_js.controlPanelHtml += "\t\t<div>选项</div>";
 	wt629_com_js.controlPanelHtml += "\t\t<div style='margin-left:20px;'>";
@@ -395,28 +415,28 @@
 	wt629_com_js.controlPanelHtml += "\t\t\t\t</div>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t<div>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<input type=\"checkbox\" id=\"wt629_com_config_thumb_up_user_status\" class=\"wt629_com_cpfrom\">";
-	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>内容->用户发布的状态</span>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>内容->用户发布的状态-></span><a href='javascript:void(0);' id=\"wt629_com_config_thumb_up_user_status_a\">手动点赞</a>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t</div>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t<div>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<input type=\"checkbox\" id=\"wt629_com_config_thumb_up_workshop_item_published\" class=\"wt629_com_cpfrom\">";
-	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>内容->用户收藏和发布的艺术作品</span>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>内容->用户收藏和发布的艺术作品-></span><a href='javascript:void(0);' id=\"wt629_com_config_thumb_up_workshop_item_published_a\">手动点赞</a>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t</div>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t<div>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<input type=\"checkbox\" id=\"wt629_com_config_thumb_up_game_purchase\" class=\"wt629_com_cpfrom\">";
-	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>内容->用户购买游戏</span>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>内容->用户购买游戏-></span><a href='javascript:void(0);' id=\"wt629_com_config_thumb_up_game_purchase_a\">手动点赞</a>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t</div>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t<div>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<input type=\"checkbox\" id=\"wt629_com_config_thumb_up_screenshot\" class=\"wt629_com_cpfrom\">";
-	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>内容->用户截图</span>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>内容->用户截图-></span><a href='javascript:void(0);' id=\"wt629_com_config_thumb_up_screenshot_a\">手动点赞</a>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t</div>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t<div>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<input type=\"checkbox\" id=\"wt629_com_config_thumb_up_recommendation\" class=\"wt629_com_cpfrom\">";
-	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>内容->用户评测</span>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>内容->用户评测-></span><a href='javascript:void(0);' id=\"wt629_com_config_thumb_up_recommendation_a\">手动点赞</a>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t</div>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t<div style='margin-left:20px;'>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<div>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t\t\t<input type=\"checkbox\" id=\"wt629_com_config_thumb_happy_by_recommendation\" class=\"wt629_com_cpfrom\">";
-	wt629_com_js.controlPanelHtml += "\t\t\t\t\t\t<span>评测结果为不推荐的点欢乐</span>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t\t<span>评测结果为不推荐的点欢乐-></span><a href='javascript:void(0);' id=\"wt629_com_config_thumb_happy_by_recommendation_a\">手动点赞</a>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t\t</div>";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t</div>";
 	wt629_com_js.controlPanelHtml += "\t\t\t</div>";
