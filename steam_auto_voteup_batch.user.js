@@ -4,7 +4,7 @@
 // @description Steam社区自动点赞脚本,在steam动态页面上添加自动点赞.
 // @include     http*://steamcommunity.com/id/*/home/ 
 // @include     http*://steamcommunity.com/profiles/*/home/
-// @version     2.2
+// @version     2.4
 // @require     https://code.jquery.com/jquery-2.2.4.min.js
 // ==/UserScript==
 (function() {
@@ -305,19 +305,21 @@
 
 		thumbUpByClass: function(className, isThumbHappyByRecommendation, logType) {
 			// 所有点赞按钮
-			// className = '.blotter_block  .blotter_workshopitempublished';
 			var thumbUpObject = $(className);
 			// 所有可以点赞的数量
 			var thumbUpNum = thumbUpObject.length;
-			// 已经点赞过的数量
+			// 点赞的数量
 			var thumbUpActiveNum = 0;
 			// 点赞欢乐的数量
 			var thumbUpHappyNum = 0;
 			// 未点赞的数量
 			var thumbUpNotActiveNum = 0;
+			// 已经点赞的数量
+			var thumbUpAlreadyActiveNum = 0;
 			thumbUpObject.each(function(){
 				var activeObject = $(this).find('.active');
-				if (activeObject == null || activeObject.length == 0){
+				var activeBtnObject = $(this).find('.btn_active');
+				if ((activeObject == null || activeObject.length == 0)&&(activeBtnObject == null || activeBtnObject.length == 0)){
 					thumbUpNotActiveNum ++;
 					var isThumbsUp = false;
 					var isFunny = false;
@@ -335,6 +337,7 @@
 						isThumbsUp = true;
 					}
 					if (isThumbsUp){
+						thumbUpActiveNum ++;
 						var thumbUp = $(this).find('.thumb_up');
 						if (thumbUp != null){
 							$(thumbUp).css('border-bottom','1px solid #F00');
@@ -342,6 +345,7 @@
 						}
 					}
 					if (isFunny){
+						thumbUpHappyNum ++;
 						var funny = $(this).find('.funny');
 						if (funny != null){
 							$(funny).css('border-bottom','1px solid #F00');
@@ -349,12 +353,11 @@
 						}
 					}
 				}else{
-					thumbUpActiveNum ++;
+					thumbUpAlreadyActiveNum ++;
 				}
 			});
-			console.log(thumbUpNum);
-			console.log(thumbUpActiveNum);
-			console.log(thumbUpNotActiveNum);
+			wt629_com_js.log(logType + '点赞完成', true);
+			wt629_com_js.log('共' + thumbUpNum + '次->已点赞' + thumbUpAlreadyActiveNum + '次，本次(点赞' + thumbUpActiveNum + '次，欢乐' + thumbUpHappyNum + '次)', true);
 		},
 
 	};
@@ -364,7 +367,7 @@
 	wt629_com_js.controlPanelHtml += "\t\t<span id='wt629_com_controlPanel_page_reload_tip' ></span>";
 	wt629_com_js.controlPanelHtml += "\t\t<span id='wt629_com_controlPanel_show_or_hide' ><a href='javascript:void(0);'>显示/隐藏</a></span>";
 	wt629_com_js.controlPanelHtml += "\t</div>";
-	wt629_com_js.controlPanelHtml += "\t<div class='wt629_com_controlPanel_main'>Steam社区自动点赞脚本控制台<br/>[v2.2版->极度缓慢开发中...]</div>";
+	wt629_com_js.controlPanelHtml += "\t<div class='wt629_com_controlPanel_main'>Steam社区自动点赞脚本控制台<br/>[v2.4版->极度缓慢开发中...]-><a href='https://steamcommunity.com/sharedfiles/filedetails/?id=1690131781'>使用详细说明（Steam指南）</a></div>";
 	wt629_com_js.controlPanelHtml += "\t<div class='wt629_com_controlPanel_main' style='margin-left:20px;'>";
 	wt629_com_js.controlPanelHtml += "\t\t<div>选项</div>";
 	wt629_com_js.controlPanelHtml += "\t\t<div style='margin-left:20px;'>";
