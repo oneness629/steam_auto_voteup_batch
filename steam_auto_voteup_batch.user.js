@@ -319,6 +319,9 @@
 			thumbUpObject.each(function(){
 				var activeObject = $(this).find('.active');
 				var activeBtnObject = $(this).find('.btn_active');
+				/*console.log('activeObject');
+				console.log(activeObject);
+				console.log(activeBtnObject);*/
 				if ((activeObject == null || activeObject.length == 0)&&(activeBtnObject == null || activeBtnObject.length == 0)){
 					thumbUpNotActiveNum ++;
 					var isThumbsUp = false;
