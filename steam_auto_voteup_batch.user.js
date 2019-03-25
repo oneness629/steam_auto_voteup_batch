@@ -4,7 +4,7 @@
 // @description Steam社区自动点赞脚本,在steam动态页面上添加自动点赞.
 // @include     http*://steamcommunity.com/id/*/home/ 
 // @include     http*://steamcommunity.com/profiles/*/home/
-// @version     2.1
+// @version     2.2
 // @require     https://code.jquery.com/jquery-2.2.4.min.js
 // ==/UserScript==
 (function() {
@@ -44,12 +44,26 @@
 
 		setDefaultConfigData: function(){
 			var config = {
-				isEnable: true,
+				isEnable: false,
 				isShow: true,
 				isTimedRefresh: false,
 				refreshTimeout : 60,
+
+				// 用户状态
+				thumbUpUserStatus: true,
+				// 收藏和发布艺术作品
+				thumbUpWorkshopItemPublished: true,
+				// 购买游戏
+				thumbUpGamePurchase: true,
+				// 截图
+				thumbUpScreenshot  : true,
+				// 评测
+				thumbUpRecommendation: true,
+				// 评测为不推荐的点欢乐
+				thumbHappyByRecommendation: true,
 			};
 			localStorage.setItem('wt629_com_auto_voteup_config',JSON.stringify(config));
+			wt629_com_js.log('使用默认配置重置脚本设置完成' , true);
 		},
 
 		saveConfig: function(){
@@ -62,6 +76,7 @@
 				wt629_com_js.log('初始化配置信息 ... ', false);
 				wt629_com_js.setDefaultConfigData();
 				wt629_com_js.log('初始化配置信息 完成 ', true);
+				wt629_com_js.readConfigData();
 			}
 		},
 
@@ -71,6 +86,7 @@
 			var config = localStorage.getItem('wt629_com_auto_voteup_config');
 			try{
 				wt629_com_js.config = JSON.parse(config);
+				wt629_com_js.checkIsConfig();
 			}catch (e) {
 				wt629_com_js.log('读取配置出错' + e, true);
 				wt629_com_js.log('使用默认配置重置' , true);
@@ -80,9 +96,9 @@
 		},
 
 
-		// 将配置数据显示到表单
-		showConfigData: function(){
-			wt629_com_js.log('显示配置表单信息 ... ', true);
+		// 同步设置到表单
+		syncConfigDataToForm: function(){
+			wt629_com_js.log('同步设置到表单 ... ', true);
 			if (wt629_com_js.config.isEnable){
 				$('#wt629_com_is_enable').attr('checked','checked');
 			}
@@ -99,7 +115,53 @@
 				wt629_com_js.saveConfig();
 			}
 			$('#wt629_com_refresh_timeout').val(wt629_com_js.config.refreshTimeout);
-			wt629_com_js.log('显示配置表单信息 完成 ', true);
+
+			// 空值检查
+			if (wt629_com_js.config.thumbHappyByRecommendation == null || wt629_com_js.config.thumbHappyByRecommendation == undefined) {
+				wt629_com_js.config.thumbHappyByRecommendation = true;
+				wt629_com_js.saveConfig();
+			}
+			if (wt629_com_js.config.thumbUpGamePurchase == null || wt629_com_js.config.thumbUpGamePurchase == undefined) {
+				wt629_com_js.config.thumbUpGamePurchase = true;
+				wt629_com_js.saveConfig();
+			}
+			if (wt629_com_js.config.thumbUpRecommendation == null || wt629_com_js.config.thumbUpRecommendation == undefined) {
+				wt629_com_js.config.thumbUpRecommendation = true;
+				wt629_com_js.saveConfig();
+			}
+			if (wt629_com_js.config.thumbUpScreenshot == null || wt629_com_js.config.thumbUpScreenshot == undefined) {
+				wt629_com_js.config.thumbUpScreenshot = true;
+				wt629_com_js.saveConfig();
+			}
+			if (wt629_com_js.config.thumbUpUserStatus == null || wt629_com_js.config.thumbUpUserStatus == undefined) {
+				wt629_com_js.config.thumbUpUserStatus = true;
+				wt629_com_js.saveConfig();
+			}
+			if (wt629_com_js.config.thumbUpWorkshopItemPublished == null || wt629_com_js.config.thumbUpWorkshopItemPublished == undefined) {
+				wt629_com_js.config.thumbUpWorkshopItemPublished = true;
+				wt629_com_js.saveConfig();
+			}
+
+			if (wt629_com_js.config.thumbHappyByRecommendation){
+				$('#wt629_com_config_thumb_happy_by_recommendation').attr('checked','checked');
+			}
+			if (wt629_com_js.config.thumbUpGamePurchase){
+				$('#wt629_com_config_thumb_up_game_purchase').attr('checked','checked');
+			}
+			if (wt629_com_js.config.thumbUpRecommendation){
+				$('#wt629_com_config_thumb_up_recommendation').attr('checked','checked');
+			}
+			if (wt629_com_js.config.thumbUpScreenshot){
+				$('#wt629_com_config_thumb_up_screenshot').attr('checked','checked');
+			}
+			if (wt629_com_js.config.thumbUpUserStatus){
+				$('#wt629_com_config_thumb_up_user_status').attr('checked','checked');
+			}
+			if (wt629_com_js.config.thumbUpWorkshopItemPublished){
+				$('#wt629_com_config_thumb_up_workshop_item_published').attr('checked','checked');
+			}
+
+			wt629_com_js.log('同步设置到表单 完成 ', true);
 		},
 
 
@@ -154,6 +216,13 @@
 				wt629_com_js.config.isTimedRefresh = $('#wt629_com_is_timed_refresh').is(':checked');
 				wt629_com_js.config.refreshTimeout = $('#wt629_com_refresh_timeout').val();
 
+				wt629_com_js.config.thumbHappyByRecommendation = $('#wt629_com_config_thumb_happy_by_recommendation').is(':checked');
+				wt629_com_js.config.thumbUpGamePurchase = $('#wt629_com_config_thumb_up_game_purchase').is(':checked');
+				wt629_com_js.config.thumbUpRecommendation = $('#wt629_com_config_thumb_up_recommendation').is(':checked');
+				wt629_com_js.config.thumbUpScreenshot = $('#wt629_com_config_thumb_up_screenshot').is(':checked');
+				wt629_com_js.config.thumbUpUserStatus = $('#wt629_com_config_thumb_up_user_status').is(':checked');
+				wt629_com_js.config.thumbUpWorkshopItemPublished = $('#wt629_com_config_thumb_up_workshop_item_published').is(':checked');
+
 				wt629_com_js.log('保存配置 ... ', true);
 				// 保存
 				wt629_com_js.saveConfig();
@@ -195,14 +264,29 @@
 		// 点赞事件
 		thumbUpEvnet: function(){
 			if (wt629_com_js.config.isEnable){
-				wt629_com_js.log('点赞选项已启用 ...', false);
+				wt629_com_js.log('点赞选项已启用 ...', true);
 				// 批量点赞
-				// wt629_com_js.thumbUp();
-				wt629_com_js.thumbUpByClass('.blotter_block .blotter_userstatus', false);
-				wt629_com_js.thumbUpByClass('.blotter_block  .blotter_workshopitempublished', false);
-				wt629_com_js.thumbUpByClass('.blotter_block  .blotter_gamepurchase', false);
-				wt629_com_js.thumbUpByClass('.blotter_block  .blotter_screenshot', false);
-				wt629_com_js.thumbUpByClass('.blotter_block .blotter_recommendation', true);
+
+				if (wt629_com_js.config.thumbUpGamePurchase){
+					wt629_com_js.thumbUpByClass('.blotter_block  .blotter_gamepurchase', false, '用户购买游戏');
+				}
+				if (wt629_com_js.config.thumbUpRecommendation){
+					if (wt629_com_js.config.thumbHappyByRecommendation){
+						wt629_com_js.thumbUpByClass('.blotter_block .blotter_recommendation', true, '用户评测点赞（不推荐欢乐）');
+					}else{
+						wt629_com_js.thumbUpByClass('.blotter_block .blotter_recommendation', false, '用户评测全点赞');
+					}
+				}
+				if (wt629_com_js.config.thumbUpScreenshot){
+					wt629_com_js.thumbUpByClass('.blotter_block  .blotter_screenshot', false, '用户截图');
+				}
+				if (wt629_com_js.config.thumbUpUserStatus){
+					wt629_com_js.thumbUpByClass('.blotter_block .blotter_userstatus', false, '用户发布的状态');
+				}
+				if (wt629_com_js.config.thumbUpWorkshopItemPublished){
+					wt629_com_js.thumbUpByClass('.blotter_block  .blotter_workshopitempublished', false, '用户收藏和发布的艺术作品');
+				}
+
 				wt629_com_js.log('批量点赞完成 ', true);
 
 				var isTimedRefresh = wt629_com_js.config.isTimedRefresh;
@@ -215,16 +299,21 @@
 				}
 
 			}else{
-				wt629_com_js.log('点赞选项未启用 ...', false);
+				wt629_com_js.log('点赞选项未启用 ...', true);
 			}
 		},
 
-		thumbUpByClass: function(className, isThumbHappyByRecommendation) {
+		thumbUpByClass: function(className, isThumbHappyByRecommendation, logType) {
 			// 所有点赞按钮
 			// className = '.blotter_block  .blotter_workshopitempublished';
 			var thumbUpObject = $(className);
+			// 所有可以点赞的数量
 			var thumbUpNum = thumbUpObject.length;
+			// 已经点赞过的数量
 			var thumbUpActiveNum = 0;
+			// 点赞欢乐的数量
+			var thumbUpHappyNum = 0;
+			// 未点赞的数量
 			var thumbUpNotActiveNum = 0;
 			thumbUpObject.each(function(){
 				var activeObject = $(this).find('.active');
@@ -268,171 +357,95 @@
 			console.log(thumbUpNotActiveNum);
 		},
 
-
-		thumbUp: function() {
-			wt629_com_js.log('开始点赞 ...',true);
-			// 所有点赞按钮
-			var thumb_up = $('.thumb_up');
-			var num = thumb_up.size();
-			var num_upClick = 0;
-			var num_happyClick = 0;
-			thumb_up.each(function(){
-
-				try{
-					var classStr = $(this).parent().parent().attr('class');
-					// 遍历没有点击的点赞按钮[包含未点击和点击欢乐的]
-					if (!(classStr != null && classStr.indexOf('active') > -1)){
-						// 点赞按钮
-						var thumbUpA = $(this).parent().parent();
-						var thumbDownA = $(thumbUpA).next('a');
-						// 欢乐按钮html <i class="ico16 funny"></i>欢乐</span>
-						// 分享按钮html <span>分享</span>
-						var thumbHappyA = null;
-
-						var isUp = true;
-						var isDown = false;
-						var isHappy = false;
-
-						var isUpButton = false;
-						var isHappyButton = false;
-
-						// 是否有不支持按钮
-						if(thumbDownA != null ){
-							thumbHappyA = $(thumbDownA).next('a');
-							// 是否有不支持和欢乐按钮
-							if (thumbDownA != null && thumbHappyA != null){
-
-								// 确认不支持和欢乐按钮是否正确 thumb_down funny
-								var downHtml = thumbDownA.html();
-								var happyHtml = thumbHappyA.html();
-
-								if (downHtml != null && downHtml.indexOf('thumb_down') > -1){
-									// 不支持按钮正常
-									isDown = true;
-								}
-								if (happyHtml != null && happyHtml.indexOf('funny') > -1){
-									// 欢乐按钮正常
-									isHappy = true;
-								}
-							}
-						}
-						if(isHappy){
-							// 有欢乐按钮，说明是评测，检查评测状态
-							var statusHtml = $(thumbUpA).parent().parent().parent().prev().find('.thumb').html();
-							// 如果存在thumbsUp.png，说明是支持，否则thumbsDown.png，不支持
-							if (statusHtml.indexOf('thumbsUp.png') > -1){
-								isUpButton = true;
-								isHappyButton = false;
-							}else if (statusHtml.indexOf('thumbsDown.png') > -1){
-								isUpButton = false;
-								isHappyButton = true;
-							}else{
-								// 没有找到是否支持，直接点赞
-								isUpButton = true;
-								isHappyButton = false;
-							}
-
-							if (isUpButton){
-								// $(thumbUpA).html("["+ $(thumbUpA).html() +"]");
-								$(thumbUpA).css('border-bottom','1px solid #F00');
-								$(thumbUpA).click();
-								num_upClick ++;
-							}
-							if (isHappyButton){
-								// 如果有欢乐按钮，确保欢乐按钮没有按下
-								var happyHtml = thumbHappyA.html();
-								if(thumbHappyA.attr('class').indexOf('active') > -1){
-								}else{
-									// $(thumbHappyA).html("["+ $(thumbHappyA).html() +"]");
-									$(thumbHappyA).css('border-bottom','1px solid #F00');
-									$(thumbHappyA).click();
-									num_happyClick ++;
-								}
-							}
-						} else {
-							// 如果没有欢乐按钮 直接点赞
-							// $(thumbUpA).html("["+ $(thumbUpA).html() +"]");
-							$(thumbUpA).css('border-bottom','1px solid #F00');
-							$(thumbUpA).click();
-							num_upClick ++;
-						}
-					}
-				}catch(e){
-					wt629_com_js.log('操作出现异常，' + e,true);
-				}
-			});
-			wt629_com_js.log('一共' + num + '条动态，点赞' + num_upClick + '次，点欢乐'+ num_happyClick + '次。' ,true);
-			wt629_com_js.log('点赞完成，但ajax并非全部完成，请等待一些时间 ... ',true);
-		},
-
-
 	};
 
 	wt629_com_js.controlPanelHtml += "<div id='wt629_com_controlPanel' style='font-size: 10px; position:fixed; top: 10px; left: 10px; background-color: red; z-index: 450; color: white; width : 300px;'>";
 	wt629_com_js.controlPanelHtml += "\t<div style='float: right;'>";
 	wt629_com_js.controlPanelHtml += "\t\t<span id='wt629_com_controlPanel_page_reload_tip' ></span>";
-	wt629_com_js.controlPanelHtml += "\t\t<span id='wt629_com_controlPanel_show_or_hide' >显示/隐藏</span>";
+	wt629_com_js.controlPanelHtml += "\t\t<span id='wt629_com_controlPanel_show_or_hide' ><a href='javascript:void(0);'>显示/隐藏</a></span>";
 	wt629_com_js.controlPanelHtml += "\t</div>";
-	wt629_com_js.controlPanelHtml += "\t<div class='wt629_com_controlPanel_main'>Steam社区自动点赞脚本控制台<br/>[缓慢开发中...]</div>";
+	wt629_com_js.controlPanelHtml += "\t<div class='wt629_com_controlPanel_main'>Steam社区自动点赞脚本控制台<br/>[v2.2版->极度缓慢开发中...]</div>";
 	wt629_com_js.controlPanelHtml += "\t<div class='wt629_com_controlPanel_main' style='margin-left:20px;'>";
-	wt629_com_js.controlPanelHtml += "\t\t<div>URL</div>";
-	wt629_com_js.controlPanelHtml += "\t\t<div style='margin-left:20px;' id='wt629_com_controlPanel_url'>";
-	wt629_com_js.controlPanelHtml += "\t\t</div>";
 	wt629_com_js.controlPanelHtml += "\t\t<div>选项</div>";
 	wt629_com_js.controlPanelHtml += "\t\t<div style='margin-left:20px;'>";
 	wt629_com_js.controlPanelHtml += "\t\t\t<div> ";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t<input type=\"checkbox\" id=\"wt629_com_is_enable\" class=\"wt629_com_cpfrom\">";
 	wt629_com_js.controlPanelHtml += "\t\t\t\t<span>启用自动点赞</span>";
 	wt629_com_js.controlPanelHtml += "\t\t\t</div>";
-	wt629_com_js.controlPanelHtml += "\t\t\t<div> ";
-	wt629_com_js.controlPanelHtml += "\t\t\t\t<input type=\"checkbox\" id=\"wt629_com_is_show\" class=\"wt629_com_cpfrom\">";
-	wt629_com_js.controlPanelHtml += "\t\t\t\t<span>默认显示控制界面</span>";
-	wt629_com_js.controlPanelHtml += "\t\t\t</div>";
-	wt629_com_js.controlPanelHtml += "\t\t\t<div>";
-	wt629_com_js.controlPanelHtml += "\t\t\t\t<input type=\"checkbox\" id=\"wt629_com_is_timed_refresh\" class=\"wt629_com_cpfrom\">";
-	wt629_com_js.controlPanelHtml += "\t\t\t\t<span>自动刷新页面</span>";
-	wt629_com_js.controlPanelHtml += "\t\t\t</div>";
-	wt629_com_js.controlPanelHtml += "\t\t\t<div>";
-	wt629_com_js.controlPanelHtml += "\t\t\t\t<input type=\"number\" id=\"wt629_com_refresh_timeout\" class=\"wt629_com_cpfrom\" min=\"10\" max=\"3600\" style='width:50px;' />";
-	wt629_com_js.controlPanelHtml += "\t\t\t\t<span>自动刷新页面时间[10~3600秒]</span>";
+	wt629_com_js.controlPanelHtml += "\t\t\t<div style='margin-left:20px;'>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t<div> ";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<input type=\"checkbox\" id=\"wt629_com_is_show\" class=\"wt629_com_cpfrom\">";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>默认显示控制界面</span>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t</div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t<div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<input type=\"checkbox\" id=\"wt629_com_is_timed_refresh\" class=\"wt629_com_cpfrom\">";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>自动刷新页面</span>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t</div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t<div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<input type=\"number\" id=\"wt629_com_refresh_timeout\" class=\"wt629_com_cpfrom\" min=\"10\" max=\"3600\" style='width:50px;' />";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>自动刷新页面时间[10~3600秒]</span>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t</div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t<div><br/>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t</div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t<div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<input type=\"checkbox\" id=\"wt629_com_config_thumb_up_user_status\" class=\"wt629_com_cpfrom\">";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>内容->用户发布的状态</span>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t</div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t<div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<input type=\"checkbox\" id=\"wt629_com_config_thumb_up_workshop_item_published\" class=\"wt629_com_cpfrom\">";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>内容->用户收藏和发布的艺术作品</span>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t</div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t<div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<input type=\"checkbox\" id=\"wt629_com_config_thumb_up_game_purchase\" class=\"wt629_com_cpfrom\">";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>内容->用户购买游戏</span>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t</div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t<div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<input type=\"checkbox\" id=\"wt629_com_config_thumb_up_screenshot\" class=\"wt629_com_cpfrom\">";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>内容->用户截图</span>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t</div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t<div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<input type=\"checkbox\" id=\"wt629_com_config_thumb_up_recommendation\" class=\"wt629_com_cpfrom\">";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<span>内容->用户评测</span>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t</div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t<div style='margin-left:20px;'>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t<div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t\t<input type=\"checkbox\" id=\"wt629_com_config_thumb_happy_by_recommendation\" class=\"wt629_com_cpfrom\">";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t\t<span>评测结果为不推荐的点欢乐</span>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t\t</div>";
+	wt629_com_js.controlPanelHtml += "\t\t\t\t</div>";
 	wt629_com_js.controlPanelHtml += "\t\t\t</div>";
 	wt629_com_js.controlPanelHtml += "\t\t</div>";
 	wt629_com_js.controlPanelHtml += "\t</div>";
-	wt629_com_js.controlPanelHtml += "\t<hr/>";
-	wt629_com_js.controlPanelHtml += "\t<div class='wt629_com_controlPanel_main' style='margin-left:0px;'>";
+	wt629_com_js.controlPanelHtml += "\t<div class='wt629_com_controlPanel_main' style='margin-left:0px; border-top: 1px solid white;'>";
 	wt629_com_js.controlPanelHtml += "\t\t<div>日志信息:</div>";
-	wt629_com_js.controlPanelHtml += "\t\t<div style='margin-left:0px;' id='wt629_com_controlPanel_msg'>显示日志内容</div>";
+	wt629_com_js.controlPanelHtml += "\t\t<div style='margin-left:10px;' id='wt629_com_controlPanel_msg'></div>";
 	wt629_com_js.controlPanelHtml += "\t</div>";
 	wt629_com_js.controlPanelHtml += "</div>";
 	wt629_com_js.controlPanelHtml += "";
 
 
-
 	$(document).ready(function() {
-		$('body').append(wt629_com_js.controlPanelHtml);
+		try{
+			$('body').append(wt629_com_js.controlPanelHtml);
 
-		// 读取配置数据
-		wt629_com_js.readConfigData();
+			// 读取配置数据
+			wt629_com_js.readConfigData();
 
-		// 检查配置是否存在，不存在使用缺省
-		wt629_com_js.checkIsConfig();
+			// 检查是否可视
+			wt629_com_js.checkIsShow();
 
-		// 检查是否可视
-		wt629_com_js.checkIsShow();
+			// 显示配置到表单
+			wt629_com_js.syncConfigDataToForm();
 
-		// 显示配置到表单
-		wt629_com_js.showConfigData();
+			// 设置事件
+			wt629_com_js.setEvent();
 
-		// 设置事件
-		wt629_com_js.setEvent();
-
-		// 点赞事件
-		wt629_com_js.thumbUpEvnet();
-
-		var url = window.location.href;
-		$('wt629_com_controlPanel_url').innerHTML = url;
+			// 点赞事件
+			wt629_com_js.thumbUpEvnet();
+		}catch (e) {
+			wt629_com_js.log("脚本出现异常，请与制作人联系！", e);
+		}
 
 	});
-
 
 })();
